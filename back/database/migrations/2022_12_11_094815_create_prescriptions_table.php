@@ -13,8 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('sales', function (Blueprint $table) {
+        Schema::create('prescriptions', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('query_id')->constrained();
+            $table->foreignId('patient_id')->constrained();
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('hospital_id')->constrained();
+            $table->string('description');
             $table->timestamps();
         });
     }
@@ -26,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sales');
+        Schema::dropIfExists('prescriptions');
     }
 };

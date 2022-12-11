@@ -37,6 +37,19 @@ return new class extends Migration
             $table->string('note')->nullable();
             $table->string('exploration')->nullable();
 
+            $table->text('observations')->nullable();
+
+            $table->string('summary')->nullable();
+            $table->string('action')->nullable();
+
+
+
+            $table->date('date');
+            $table->time('time');
+
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('hospital_id')->constrained();
+            $table->foreignId('sale_id')->constrained()->nullable();
             $table->timestamps();
         });
     }
