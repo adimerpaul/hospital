@@ -1,4 +1,6 @@
 import Sale from 'pages/Sale'
+import Patient from 'pages/Patient'
+import Reservations from 'pages/Reservations'
 
 const routes = [
   {
@@ -8,7 +10,9 @@ const routes = [
       { path: '', component: () => import('pages/IndexPage.vue') },
       { path: 'category', component: () => import('pages/Category.vue') },
       { path: 'product', component: () => import('pages/Product.vue') },
-      { path: 'sale', component: Sale }
+      { path: 'sale', component: Sale },
+      { path: 'patient', component: Patient },
+      { path: 'reservations', component: Reservations }
     ]
   },
   { path: '/signup', component: () => import('pages/Signup.vue') },

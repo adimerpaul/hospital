@@ -77,9 +77,24 @@
               Ventas
             </q-item-section>
           </q-item>
+          <q-item clickable v-ripple to="/patient" active-class="bg-blue-6 text-white" exact>
+            <q-item-section avatar>
+              <q-icon name="o_people" />
+            </q-item-section>
+            <q-item-section>
+              Pacientes
+            </q-item-section>
+          </q-item>
+          <q-item clickable v-ripple to="/reservations" active-class="bg-blue-6 text-white" exact>
+            <q-item-section avatar>
+              <q-icon name="o_event_note" />
+            </q-item-section>
+            <q-item-section>
+              Reservas
+            </q-item-section>
+          </q-item>
         </q-list>
       </q-scroll-area>
-
       <q-img class="absolute-top" src="fondo.jpg" style="height: 130px">
         <div class="absolute-bottom bg-transparent">
           <q-avatar size="56px" class="q-mb-sm">
@@ -90,7 +105,6 @@
         </div>
       </q-img>
     </q-drawer>
-
     <q-page-container>
       <router-view />
     </q-page-container>
