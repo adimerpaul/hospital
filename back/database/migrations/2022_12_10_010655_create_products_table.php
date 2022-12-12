@@ -17,14 +17,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('hospital_id')->constrained();
             $table->foreignId('category_id')->constrained();
-            $table->string('barra')->default('');
+            $table->string('barra')->default('')->nullable();
             $table->string('name');
-            $table->double('priceCost',11,2);
-            $table->double('priceSale',11,2);
             $table->integer('stock');
             $table->integer('stockMin');
             $table->integer('stockMax');
             $table->string('photo');
+            $table->string('color');
             $table->timestamps();
         });
     }

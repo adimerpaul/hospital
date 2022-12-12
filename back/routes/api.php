@@ -14,6 +14,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
+Route::post('/register', [\App\Http\Controllers\UserController::class, 'register']);
+Route::post('/login', [\App\Http\Controllers\UserController::class, 'login']);
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::post('/logout', [\App\Http\Controllers\UserController::class, 'logout']);
+    Route::post('/upload', [\App\Http\Controllers\UploadController::class, 'upload']);
+    Route::post('/me', [\App\Http\Controllers\UserController::class, 'me']);
+    Route::apiResource('categories', \App\Http\Controllers\CategoryController::class);
+    Route::apiResource('products', \App\Http\Controllers\ProductController::class);
+    Route::apiResource('lots', \App\Http\Controllers\LotController::class);
 });

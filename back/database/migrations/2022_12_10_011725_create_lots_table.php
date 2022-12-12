@@ -18,6 +18,8 @@ return new class extends Migration
             $table->foreignId('hospital_id')->constrained();
             $table->foreignId('product_id')->constrained();
             $table->integer('quantity');
+            $table->double('priceCost',11,2);
+            $table->double('priceSale',11,2);
             $table->date('expiration');
             $table->string('batch');
             $table->timestamps();

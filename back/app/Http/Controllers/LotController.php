@@ -5,82 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\Lot;
 use App\Http\Requests\StoreLotRequest;
 use App\Http\Requests\UpdateLotRequest;
+use App\Models\Product;
+use Illuminate\Http\Request;
 
 class LotController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
+    public function index(Request $request){return Lot::where('hospital_id', $request->user()->hospital_id)->get();}
+    public function store(Request $request){
+        $product = Product::find($request->product_id);
+        $product->stock = $product->stock + $request->quantity;
+        $product->save();
+        return Lot::create($request->all());
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreLotRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreLotRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Lot  $lot
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Lot $lot)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Lot  $lot
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Lot $lot)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateLotRequest  $request
-     * @param  \App\Models\Lot  $lot
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateLotRequest $request, Lot $lot)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Lot  $lot
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Lot $lot)
-    {
-        //
-    }
+    public function show(Lot $lot){return $lot;}
+    public function update(Request $request, Lot $lot){$lot->update($request->all());return $lot;}
+    public function destroy(Lot $lot){$lot->delete();return $lot;}
 }

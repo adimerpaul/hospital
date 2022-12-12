@@ -21,7 +21,17 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'type',
+        'sex',
+        'specialty',
+        'avatar',
+        'ci',
+        'hospital_id',
     ];
+    public function hospital()
+    {
+        return $this->belongsTo(Hospital::class);
+    }
 
     /**
      * The attributes that should be hidden for serialization.

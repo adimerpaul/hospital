@@ -18,14 +18,13 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('type');
+            $table->string('type')->default('DOCTOR');
             $table->string('sex');
-            $table->string('expecialidad');
-            $table->string('phone');
+            $table->string('specialty');
             $table->string('avatar')->default('avatar.png');
             $table->string('ci');
-            $table->timestamp('email_verified_at')->nullable();
             $table->foreignId('hospital_id')->nullable()->constrained();
+            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
