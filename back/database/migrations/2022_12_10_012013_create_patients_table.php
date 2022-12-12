@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('phone');
             $table->string('email');
             $table->string('address');
-            $table->string('avatar');
+            $table->string('avatar')->default('default.png')->nullable();
             $table->date('birthday');
             $table->foreignId('hospital_id')->constrained();
             $table->timestamps();
