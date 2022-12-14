@@ -17,7 +17,7 @@
 </template>
   <template v-slot:body-cell-options="props">
     <q-td :props="props">
-      <q-btn-dropdown label="Opciones" color="primary" >
+      <q-btn-dropdown label="Opciones" color="primary" no-caps >
         <q-list>
           <q-item clickable @click="patientEditClick(props.row)">
             <q-item-section avatar>
@@ -30,6 +30,12 @@
               <q-icon name="o_delete" />
             </q-item-section>
             <q-item-section>Eliminar</q-item-section>
+          </q-item>
+          <q-item clickable :to="`history/${props.row.id}`">
+            <q-item-section avatar>
+              <q-icon name="o_history" />
+            </q-item-section>
+            <q-item-section>Historial Clinico</q-item-section>
           </q-item>
         </q-list>
       </q-btn-dropdown>

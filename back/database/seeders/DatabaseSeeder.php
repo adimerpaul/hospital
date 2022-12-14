@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             HospitalSeeder::class,
             UserSeeder::class,
             CategorySeeder::class,
+            PatientSeeder::class
         ]);
     }
 }

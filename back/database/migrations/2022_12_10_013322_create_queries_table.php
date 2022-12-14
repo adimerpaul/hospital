@@ -18,11 +18,12 @@ return new class extends Migration
             $table->foreignId('patient_id')->constrained();
             $table->double('weight',11,2)->nullable();
             $table->double('height',11,2)->nullable();
-            $table->string('bloodType')->nullable();
-            $table->string('allergies')->nullable();
-            $table->string('TA')->nullable();
-            $table->string('FC')->nullable();
-            $table->string('FR')->nullable();
+            $table->string('sat')->nullable();
+            $table->string('tem')->nullable();
+            $table->string('ta')->nullable();
+            $table->string('fc')->nullable();
+            $table->string('fr')->nullable();
+            $table->string('blood')->nullable();
 
             $table->string('pregnant')->nullable();
             $table->string('FUM')->nullable();
@@ -41,8 +42,6 @@ return new class extends Migration
 
             $table->string('summary')->nullable();
             $table->string('action')->nullable();
-
-
 
             $table->date('date');
             $table->time('time');
