@@ -80,7 +80,7 @@ module.exports = configure(function (ctx) {
       env: {
         API: ctx.dev
           ? 'http://localhost:8000/api/'
-          : 'http://cmedical.siscenter.org/api/'
+          : 'https://cmedical.siscenter.org/api/'
       }
     },
 
