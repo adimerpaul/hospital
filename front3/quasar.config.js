@@ -46,7 +46,7 @@ module.exports = configure(function (ctx) {
       'material-icons-outlined',
       'material-icons-sharp',
       'roboto-font', // optional, you are not bound to it
-      'material-icons', // optional, you are not bound to it
+      'material-icons' // optional, you are not bound to it
     ],
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-build
@@ -80,9 +80,8 @@ module.exports = configure(function (ctx) {
       env: {
         API: ctx.dev
           ? 'http://localhost:8000/api/'
-          : 'https://bjornada.siscenter.org/api/',
-      },
-
+          : 'http://cmedical.siscenter.org/api/'
+      }
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-devServer
@@ -113,7 +112,7 @@ module.exports = configure(function (ctx) {
         'Notify',
         'Loading',
         'Dialog',
-        'LocalStorage',
+        'LocalStorage'
       ]
     },
 
