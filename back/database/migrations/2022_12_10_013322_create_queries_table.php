@@ -38,6 +38,12 @@ return new class extends Migration
             $table->string('note')->nullable();
             $table->string('exploration')->nullable();
 
+            $table->string('prescription1')->nullable();
+            $table->string('prescription2')->nullable();
+            $table->string('prescription3')->nullable();
+            $table->string('prescription4')->nullable();
+            $table->string('prescription5')->nullable();
+
             $table->text('observations')->nullable();
 
             $table->string('summary')->nullable();

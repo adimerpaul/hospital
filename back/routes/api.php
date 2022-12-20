@@ -28,4 +28,5 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('lots', \App\Http\Controllers\LotController::class);
     Route::apiResource('patients', \App\Http\Controllers\PatientController::class);
     Route::apiResource('reservations', \App\Http\Controllers\ReservationsController::class);
+    Route::apiResource('queries', \App\Http\Controllers\QueryController::class);
 });
