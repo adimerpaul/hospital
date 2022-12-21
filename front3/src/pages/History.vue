@@ -4,7 +4,7 @@
     <div class="col-12 col-md-5">
       <div class="row">
         <div class="col-12">
-          <div class="text-uppercase text-h5 text-bold text-grey text-center">{{patient.name}} {{patient.lastname}}</div>
+          <div class="text-uppercase text-h4 text-bold text-grey text-center">{{patient.name}} {{patient.lastname}}</div>
         </div>
         <div class="col-6 q-my-xs col-md-6 text-right text-bold q-pr-xs">F. de Nacimiento:</div>
         <div class="col-6 q-my-xs col-md-6"><div class="text-left text-bold text-grey" v-if="patient.birthday!=undefined">{{formatDate(patient.birthday)}}</div></div>
@@ -23,32 +23,33 @@
     <div class="col-12 col-md-7">
       <div class="row">
         <div class="col-6">
-          <span :class="`${$q.screen.lt.md?'text-subtitle2':'text-h5'} text-bold text-center`">
+          <span :class="`${$q.screen.lt.md?'text-subtitle2':'text-h6'} text-bold text-center`">
             <q-icon name="o_monitor_heart" class="q-mr-xs text-subtitle2" size="1.4em" color="grey-8" />
             HISTORIAL CLINICO
           </span>
         </div>
         <div class="col-6 text-right">
-          <q-btn class="q-mr-xs" color="primary" label="Nuevo" icon="add_circle_outline" dense @click="historyAddClick" />
+          <q-btn class="q-mr-xs" :loading="loading" color="primary" label="Nuevo" icon="add_circle_outline" dense @click="historyAddClick" />
+          <q-icon name="refresh" :loading="loading" class="q-mr-xs" size="1.4em" color="grey-8" @click="historyGet" />
         </div>
         <div class="col-12">
-          <q-table bordered flat  :data="histories" dense :columns="historyColumns" row-key="id"  :loading="loading" :rows-per-page-options="[0, 10, 15, 20]">
+          <q-table bordered flat  :rows="histories" :loading="loading" dense :columns="historyColumns" :rows-per-page-options="[0, 10, 15, 20]">
             <template v-slot:body-cell-date="props">
-              <div class="text-left">{{formatDate(props.value)}}</div>
+              <q-td :props="props">{{formatDate(props.row.date)}} {{formatTime(props.row.time)}}</q-td>
             </template>
             <template v-slot:body-cell-options="props">
               <q-td :props="props" auto-width>
-                <q-btn-dropdown flat icon="more_vert" color="grey-8">
+                <q-btn-dropdown label="Opciones" dense color="primary" no-caps>
                   <q-list>
                     <q-item clickable v-close-popup @click="editHistory(props.row)">
                       <q-item-section avatar>
-                        <q-icon name="edit" color="grey-8" />
+                        <q-icon name="o_edit" color="grey-8" />
                       </q-item-section>
                       <q-item-section>Editar</q-item-section>
                     </q-item>
                     <q-item clickable v-close-popup @click="deleteHistory(props.row)">
                       <q-item-section avatar>
-                        <q-icon name="delete" color="grey-8" />
+                        <q-icon name="o_delete" color="grey-8" />
                       </q-item-section>
                       <q-item-section>Eliminar</q-item-section>
                     </q-item>
@@ -64,7 +65,7 @@
   <q-dialog v-model="historyShow" full-width full-height>
     <q-card class="q-pa-md" >
       <q-card-section class="row items-center q-py-none bg-primary">
-        <div class="text-center text-h5 text-bold text-white">Consulta Medica</div>
+        <div class="text-center text-h5 text-bold text-white">Consulta Medica <span v-if="!historyCreate">{{formatDate(history.date)}} {{formatTime(history.time)}}</span></div>
         <q-space />
         <q-btn icon="close" color="white" flat round dense v-close-popup />
       </q-card-section>
@@ -103,7 +104,8 @@
 <!--                <q-btn @click="aniateScroll(0,'')" label="Medicamento" no-caps align="left" class="full-width bg-primary text-white" icon="o_vaccines" flat  />-->
 <!--              </div>-->
               <div class="col-12 bg-white q-py-xs">
-                <q-btn @click="historySubmit" label="Registrar" no-caps class="full-width bg-green text-white" icon="check_circle_outline" flat  />
+                <q-btn :loading="loading" @click="historySubmit" :label="historyCreate?`Registrar`:`Modificar`" no-caps :class="`full-width ${historyCreate?`bg-green text-white`:`bg-yellow`} `" :icon="historyCreate?`check_circle_outline`:`edit`" flat  />
+                <q-btn v-if="!historyCreate" :loading="loading" @click="deleteHistory(history)" :label="`Eliminar`" no-caps :class="`full-width bg-red text-white`" :icon="`o_delete`" flat  />
               </div>
             </div>
           </div>
@@ -203,11 +205,31 @@
                 </div>
                 <div class="col-12 bg-primary q-pa-xs text-white"> <q-icon name="o_description" />Receta Medica</div>
                 <div class="col-12">
-                  <q-input dense outlined label="Receta medica 1" ref="prescription1" v-model="history.prescription1" />
-                  <q-input dense outlined label="Receta medica 2" v-model="history.prescription2" />
-                  <q-input dense outlined label="Receta medica 3" v-model="history.prescription3" />
-                  <q-input dense outlined label="Receta medica 4" v-model="history.prescription4" />
-                  <q-input dense outlined label="Receta medica 5" v-model="history.prescription5" />
+                  <q-input dense outlined label="Receta medica 1" ref="prescription1" v-model="history.prescription1">
+                    <template v-slot:append>
+                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('prescription1')" />
+                    </template>
+                  </q-input>
+                  <q-input dense outlined label="Receta medica 2" v-model="history.prescription2">
+                    <template v-slot:append>
+                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('prescription2')" />
+                    </template>
+                  </q-input>
+                  <q-input dense outlined label="Receta medica 3" v-model="history.prescription3">
+                    <template v-slot:append>
+                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('prescription3')" />
+                    </template>
+                  </q-input>
+                  <q-input dense outlined label="Receta medica 4" v-model="history.prescription4">
+                    <template v-slot:append>
+                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('prescription4')" />
+                    </template>
+                  </q-input>
+                  <q-input dense outlined label="Receta medica 5" v-model="history.prescription5">
+                    <template v-slot:append>
+                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('prescription5')" />
+                    </template>
+                  </q-input>
                 </div>
                 <div class="col-12 bg-primary q-pa-xs text-white"> <q-icon name="o_contact_support" />
                   Observaciones
@@ -254,7 +276,8 @@ export default {
         'ACCIDENTE DE TRABAJO Y ENFERMEDAD PROFESIONAL',
         'CONSULTA EXTERNA',
         'CONSULTA GENERAL',
-        'OTROS'
+        'OTROS',
+        'HISTORIA CLINICA'
       ],
       actions: [
         'REPOSOS',
@@ -269,27 +292,34 @@ export default {
       patient: {},
       id: this.$route.params.id,
       historyCreate: true,
-      historyShow: true,
+      historyShow: false,
       url: process.env.API,
       hoy: date.formatDate(new Date(), 'YYYY-MM-DD'),
       history: {
         date: date.formatDate(new Date(), 'YYYY-MM-DD'),
         note: '',
+        weight: '',
+        height: '',
         exploration: '',
         observations: '',
         smoker: 'No',
         smokerDescription: '',
         pregnant: 'No',
         alcohol: 'No',
-        alcoholDescription: ''
+        alcoholDescription: '',
+        prescription1: '',
+        prescription2: '',
+        prescription3: '',
+        prescription4: '',
+        prescription5: ''
       },
       histories: [],
       historyColumns: [
         { name: 'options', label: 'Opciones', field: 'options', sortable: true },
         { name: 'date', label: 'Fecha', field: 'date', sortable: true },
-        { name: 'patient_id', label: 'Paciente', field: 'patient_id', sortable: true },
-        { name: 'doctor_id', label: 'Doctor', field: 'doctor_id', sortable: true },
-        { name: 'description', label: 'Descripción', field: 'description', sortable: true }
+        { name: 'doctor', label: 'doctor', field: 'doctor', sortable: true },
+        { name: 'summary', label: 'Resumen medico', field: 'summary', sortable: true },
+        { name: 'action', label: 'Medida de accion', field: 'action', sortable: true }
       ],
       // transcription: '',
       isRecording: false,
@@ -298,7 +328,7 @@ export default {
       type: ''
     }
   },
-  mounted () {
+  created () {
     this.sr = new this.Recognition()
     this.sr.continuous = true
     this.sr.interimResults = true
@@ -315,6 +345,16 @@ export default {
             this.history.exploration += transcript
           } else if (this.type === 'observations') {
             this.history.observations += transcript
+          } else if (this.type === 'prescription1') {
+            this.history.prescription1 += transcript
+          } else if (this.type === 'prescription2') {
+            this.history.prescription2 += transcript
+          } else if (this.type === 'prescription3') {
+            this.history.prescription3 += transcript
+          } else if (this.type === 'prescription4') {
+            this.history.prescription4 += transcript
+          } else if (this.type === 'prescription5') {
+            this.history.prescription5 += transcript
           }
         }
       }
@@ -323,6 +363,38 @@ export default {
     this.patientGet()
   },
   methods: {
+    editHistory (history) {
+      this.history = history
+      this.historyCreate = false
+      this.historyShow = true
+    },
+    deleteHistory (history) {
+      this.$q.dialog({
+        title: 'Eliminar',
+        message: '¿Estas seguro de eliminar esta historia clinica?',
+        ok: 'Si',
+        cancel: 'No'
+      }).onOk(() => {
+        this.loading = true
+        this.$api.delete('queries/' + history.id)
+          .then(response => {
+            this.historyShow = false
+            this.$q.notify({
+              message: 'Historia clinica eliminada',
+              color: 'positive',
+              icon: 'check_circle'
+            })
+            this.historyGet()
+          })
+          .catch(error => {
+            this.$q.notify({
+              message: error.response.data.message,
+              color: 'negative',
+              icon: 'error'
+            })
+          })
+      })
+    },
     aniateScroll (px, type) {
       this.$refs.scrollAreaRef.setScrollPosition('vertical', px, 300)
       if (type === 'weight') {
@@ -357,54 +429,72 @@ export default {
       return moment(date).fromNow(true)
     },
     formatDate (date) {
-      return moment(date).format('DD/MMMM/YYYY')
+      return moment(date).format('DD/MMM/YYYY')
+    },
+    formatTime (time) {
+      return moment(time, 'HH:mm:ss').format('hh:mm a')
     },
     historyAddClick () {
-      this.historyCreate = true
-      this.historyShow = true
       this.history = {
         date: date.formatDate(new Date(), 'YYYY-MM-DD'),
         note: '',
+        weight: '',
+        height: '',
         exploration: '',
+        observations: '',
         smoker: 'No',
         smokerDescription: '',
         pregnant: 'No',
         alcohol: 'No',
-        alcoholDescription: ''
+        alcoholDescription: '',
+        prescription1: '',
+        prescription2: '',
+        prescription3: '',
+        prescription4: '',
+        prescription5: ''
       }
+      this.historyCreate = true
+      this.historyShow = true
     },
     historySubmit () {
+      this.loading = true
       if (this.historyCreate) {
         this.history.hospital_id = this.store.user.hospital_id
-        this.$api.post('histories', this.history).then(response => {
+        this.history.patient_id = this.id
+        this.history.user_id = this.store.user.id
+        this.$api.post('queries', this.history).then(response => {
           this.historyShow = false
           this.historyGet()
+          this.$q.notify({
+            message: 'Historia clinica creada',
+            color: 'positive',
+            icon: 'check_circle'
+          })
         })
       } else {
-        this.$api.put('histories/' + this.history.id, this.history).then(response => {
+        this.$api.put('queries/' + this.history.id, this.history).then(response => {
           this.historyShow = false
           this.historyGet()
+          this.$q.notify({
+            message: 'Historia clinica actualizada',
+            color: 'positive',
+            icon: 'check_circle'
+          })
         })
       }
     },
-    historyEditClick (history) {
-      this.historyCreate = false
-      this.historyShow = true
-      this.history = history
-    },
-    historyDeleteClick (history) {
-      this.$api.delete('histories/' + history.id).then(response => {
-        this.historyGet()
-      })
-    },
     historyGet () {
-      this.$api.get(`histories/${this.id}`).then(response => {
+      this.loading = true
+      this.$api.get(`queries/${this.id}`).then(response => {
         this.histories = response.data
+        this.loading = false
       })
     },
     patientGet () {
+      this.loading = true
       this.$api.get(`patients/${this.id}`).then(response => {
         this.patient = response.data
+        this.historyGet()
       })
     }
   },

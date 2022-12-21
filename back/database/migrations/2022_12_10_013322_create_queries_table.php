@@ -54,7 +54,7 @@ return new class extends Migration
 
             $table->foreignId('user_id')->constrained();
             $table->foreignId('hospital_id')->constrained();
-            $table->foreignId('sale_id')->constrained()->nullable();
+//            $table->foreignId('sale_id')->constrained()->nullable();
             $table->timestamps();
         });
     }

@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 //});
 Route::post('/register', [\App\Http\Controllers\UserController::class, 'register']);
 Route::post('/login', [\App\Http\Controllers\UserController::class, 'login']);
+Route::get('/reportHistory/{id}', [\App\Http\Controllers\QueryController::class, 'reportHistory']);
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/logout', [\App\Http\Controllers\UserController::class, 'logout']);
     Route::post('/upload', [\App\Http\Controllers\UploadController::class, 'upload']);
