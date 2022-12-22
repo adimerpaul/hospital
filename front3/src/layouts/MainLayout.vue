@@ -53,22 +53,6 @@
 <!--              Horarios-->
 <!--            </q-item-section>-->
 <!--          </q-item>-->
-          <q-item clickable v-ripple to="/category" active-class="bg-blue-6 text-white" exact>
-            <q-item-section avatar>
-              <q-icon name="o_category" />
-            </q-item-section>
-            <q-item-section>
-              Categorías
-            </q-item-section>
-          </q-item>
-          <q-item clickable v-ripple to="/product" active-class="bg-blue-6 text-white" exact>
-            <q-item-section avatar>
-              <q-icon name="o_inventory_2" />
-            </q-item-section>
-            <q-item-section>
-              Productos
-            </q-item-section>
-          </q-item>
           <q-item clickable v-ripple to="/sale" active-class="bg-blue-6 text-white" exact>
             <q-item-section avatar>
               <q-icon name="o_shopping_cart" />
@@ -91,6 +75,22 @@
             </q-item-section>
             <q-item-section>
               Reservas
+            </q-item-section>
+          </q-item>
+          <q-item clickable v-ripple to="/category" active-class="bg-blue-6 text-white" exact>
+            <q-item-section avatar>
+              <q-icon name="o_category" />
+            </q-item-section>
+            <q-item-section>
+              Categorías
+            </q-item-section>
+          </q-item>
+          <q-item clickable v-ripple to="/product" active-class="bg-blue-6 text-white" exact>
+            <q-item-section avatar>
+              <q-icon name="o_inventory_2" />
+            </q-item-section>
+            <q-item-section>
+              Productos
             </q-item-section>
           </q-item>
         </q-list>
