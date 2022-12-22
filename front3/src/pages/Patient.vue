@@ -98,13 +98,13 @@ export default {
       },
       patients: [],
       patientColumns: [
-        { name: 'options', label: 'Opciones', field: 'options', sortable: true },
-        { name: 'name', label: 'Nombre', field: (row) => `${row.name}  ${row.lastname}`, sortable: true },
-        { name: 'email', label: 'Email', field: 'email', sortable: true },
-        { name: 'birthday', label: 'Fecha de nacimiento', field: 'birthday', sortable: true },
-        { name: 'edad', label: 'Edad', field: 'edad', sortable: true },
-        { name: 'phone', label: 'Teléfono', field: 'phone', sortable: true },
-        { name: 'address', label: 'Dirección', field: 'address', sortable: true }
+        { name: 'options', label: 'OPCIONES', field: 'options', sortable: true },
+        { name: 'name', label: 'NOMBRE', field: (row) => `${row.name}  ${row.lastname}`, sortable: true },
+        { name: 'email', label: 'EMAIL', field: 'email', sortable: true },
+        { name: 'birthday', label: 'FECHA DE NACIMIENTO', field: 'birthday', sortable: true },
+        { name: 'edad', label: 'EDAD', field: 'edad', sortable: true },
+        { name: 'phone', label: 'TELEFONO', field: 'phone', sortable: true },
+        { name: 'address', label: 'DIRECCION', field: 'address', sortable: true }
       ]
     }
   },

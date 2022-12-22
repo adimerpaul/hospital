@@ -182,10 +182,10 @@ export default {
       categoryFilter: '',
       loading: false,
       categoriesColumns: [
-        { name: 'options', label: 'Opciones', field: 'options', align: 'left', sortable: true },
-        { name: 'name', label: 'Nombre', field: 'name', align: 'left', sortable: true },
-        { name: 'color', label: 'Color', field: 'color', align: 'left', sortable: true },
-        { name: 'photo', label: 'Foto', field: 'photo', align: 'left', sortable: true }
+        { name: 'options', label: 'OPCIONES', field: 'options', align: 'left', sortable: true },
+        { name: 'name', label: 'NOMBRE', field: 'name', align: 'left', sortable: true },
+        { name: 'color', label: 'COLOR', field: 'color', align: 'left', sortable: true },
+        { name: 'photo', label: 'FOTO', field: 'photo', align: 'left', sortable: true }
       ]
     }
   },

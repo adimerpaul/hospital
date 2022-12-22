@@ -72,10 +72,10 @@
         </q-card-section>
         <q-card-section class="q-pa-none">
           <div class="row items-center bg-primary text-white">
-            <div class="col-2 text-center text-bold">Cantidad</div>
-            <div class="col-6 text-center text-bold">Nombre</div>
-            <div class="col-2 text-center text-bold">Precio</div>
-            <div class="col-2 text-center text-bold">Subtotal</div>
+            <div class="col-2 text-center text-bold">CANTIDAD</div>
+            <div class="col-6 text-center text-bold">NOMBRE</div>
+            <div class="col-2 text-center text-bold">PRECIO</div>
+            <div class="col-2 text-center text-bold">SUBTOTAL</div>
           </div>
           <div class="row items-center" v-for="p in productSales" :key="p.id">
             <div class="col-2 text-center text-bold">

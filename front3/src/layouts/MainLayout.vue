@@ -42,7 +42,7 @@
               <q-icon name="o_home" />
             </q-item-section>
             <q-item-section>
-              Principal
+              PRINCIPAL
             </q-item-section>
           </q-item>
 <!--          <q-item clickable v-ripple to="/schedule" active-class="bg-blue-6 text-white" exact>-->
@@ -53,20 +53,12 @@
 <!--              Horarios-->
 <!--            </q-item-section>-->
 <!--          </q-item>-->
-          <q-item clickable v-ripple to="/sale" active-class="bg-blue-6 text-white" exact>
-            <q-item-section avatar>
-              <q-icon name="o_shopping_cart" />
-            </q-item-section>
-            <q-item-section>
-              Ventas
-            </q-item-section>
-          </q-item>
           <q-item clickable v-ripple to="/patient" active-class="bg-blue-6 text-white" exact>
             <q-item-section avatar>
               <q-icon name="o_people" />
             </q-item-section>
             <q-item-section>
-              Pacientes
+              PACIENTES
             </q-item-section>
           </q-item>
           <q-item clickable v-ripple to="/reservations" active-class="bg-blue-6 text-white" exact>
@@ -74,7 +66,15 @@
               <q-icon name="o_event_note" />
             </q-item-section>
             <q-item-section>
-              Reservas
+              RESERVAS
+            </q-item-section>
+          </q-item>
+          <q-item clickable v-ripple to="/sale" active-class="bg-blue-6 text-white" exact>
+            <q-item-section avatar>
+              <q-icon name="o_shopping_cart" />
+            </q-item-section>
+            <q-item-section>
+              VENTAS
             </q-item-section>
           </q-item>
           <q-item clickable v-ripple to="/category" active-class="bg-blue-6 text-white" exact>
@@ -82,7 +82,7 @@
               <q-icon name="o_category" />
             </q-item-section>
             <q-item-section>
-              Categorías
+              CATEGORIAS
             </q-item-section>
           </q-item>
           <q-item clickable v-ripple to="/product" active-class="bg-blue-6 text-white" exact>
@@ -90,7 +90,7 @@
               <q-icon name="o_inventory_2" />
             </q-item-section>
             <q-item-section>
-              Productos
+              PRODUCTOS
             </q-item-section>
           </q-item>
         </q-list>
