@@ -94,7 +94,8 @@ export default {
       patientShow: false,
       url: process.env.API,
       patient: {
-        birthday: date.formatDate(new Date(), 'YYYY-MM-DD')
+        birthday: date.formatDate(new Date(), 'YYYY-MM-DD'),
+        sex: 'MASCULINO'
       },
       patients: [],
       patientColumns: [
@@ -124,7 +125,8 @@ export default {
       this.patientCreate = true
       this.patientShow = true
       this.patient = {
-        birthday: date.formatDate(new Date(), 'YYYY-MM-DD')
+        birthday: date.formatDate(new Date(), 'YYYY-MM-DD'),
+        sex: 'MASCULINO'
       }
     },
     patientSubmit () {
@@ -133,11 +135,23 @@ export default {
         this.$api.post('patients', this.patient).then(response => {
           this.patientShow = false
           this.patientGet()
+        }).catch(error => {
+          this.$q.notify({
+            message: error.response.data.message,
+            color: 'negative',
+            icon: 'o_report_problem'
+          })
         })
       } else {
         this.$api.put('patients/' + this.patient.id, this.patient).then(response => {
           this.patientShow = false
           this.patientGet()
+        }).catch(error => {
+          this.$q.notify({
+            message: error.response.data.message,
+            color: 'negative',
+            icon: 'o_report_problem'
+          })
         })
       }
     },

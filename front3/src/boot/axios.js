@@ -1,6 +1,7 @@
 import { boot } from 'quasar/wrappers'
 import axios from 'axios'
 import { useCounterStore } from 'stores/example-store'
+import moment from 'moment'
 
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
@@ -12,11 +13,19 @@ const api = axios.create({ baseURL: process.env.API })
 
 export default boot(({ app, router }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
-
+  app.config.globalProperties.$filters = {
+    ageMonthDays: (value) => {
+      const years = moment().diff(value, 'years')
+      const months = moment().diff(value, 'months')
+      const months2 = months - (years * 12)
+      const days = moment().diff(value, 'days')
+      const days2 = days - (months * 30)
+      return ` ${years} años ${months2} meses ${days2} días`
+    }
+  }
   app.config.globalProperties.$axios = axios
   // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)
   //       so you won't necessarily have to import axios in each vue file
-
   app.config.globalProperties.$api = api
   const token = localStorage.getItem('tokenHospital')
 

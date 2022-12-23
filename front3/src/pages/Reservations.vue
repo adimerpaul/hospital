@@ -12,18 +12,44 @@
         <q-form @submit.prevent="reservationSubmit">
           <div class="row">
             <div class="col-12">
-              <q-select v-model="patient" label="Paciente" outlined hint="" dense required :options="patients" />
+              <div class="row">
+                <div class="col-11">
+                  <q-select @filter="filterFn" hide-hint v-model="patient"  use-input input-debounce="0" label="Paciente" outlined dense :options="patients" >
+                    <template v-slot:no-option>
+                      <q-item to="/patient">
+                        <q-item-section class="text-grey">
+                          ¿Crear paciente?
+                        </q-item-section>
+                      </q-item>
+                    </template>
+                  </q-select>
+                </div>
+                <div class="col-1 flex flex-center">
+                  <q-btn color="secondary" type="a" :href="`#/history/${patient.id}`" dense icon="history" no-caps >
+                    <q-tooltip>Ver historial</q-tooltip>
+                  </q-btn>
+                </div>
+              </div>
             </div>
-            <div class="col-12 col-md-6">
+            <div class="col-6 col-md-6">
               <q-input v-model="reservation.start" label="Fecha de inicio" type="date" outlined hint="" dense required />
+            </div>
+            <div class="col-6 col-md-6">
               <q-input v-model="reservation.startTime" label="Hora de inicio" type="time" outlined hint="" dense required />
             </div>
-            <div class="col-12 col-md-6">
+            <div class="col-6 col-md-6">
               <q-input v-model="reservation.end" label="Fecha de fin" type="date" outlined hint="" dense required />
+            </div>
+            <div class="col-6 col-md-6">
               <q-input v-model="reservation.endTime" label="Hora de fin" type="time" outlined hint="" dense required />
             </div>
-            <div class="col-12 text-bold">
+            <div class="col-6 text-bold">
               <q-input v-model="reservation.description" label="Descripción" outlined hint="" dense required />
+            </div>
+            <div class="col-6 text-bold">
+              <q-input v-model="reservation.amount" label="Monto" outlined hint="" dense required type="number" step="0.01" />
+            </div>
+            <div class="col-12 text-bold">
               {{durationTime}}
             </div>
           </div>
@@ -105,6 +131,7 @@ export default {
         element.value = element.id
         this.patients.push(element)
       })
+      this.patients2 = this.patients
       this.patient = this.patients[0]
     })
   },
@@ -189,6 +216,22 @@ export default {
       })
       this.reservationShow = true
     },
+    filterFn (val, update) {
+      if (val === '') {
+        update(() => {
+          this.patients = this.patients2
+
+          // here you have access to "ref" which
+          // is the Vue reference of the QSelect
+        })
+        return
+      }
+
+      update(() => {
+        const needle = val.toLowerCase()
+        this.patients = this.patients2.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
+      })
+    },
     reservationSubmit () {
       if (this.reservationCreate) {
         this.loading = true
@@ -199,9 +242,18 @@ export default {
           description: this.reservation.description,
           hospital_id: this.store.user.hospital_id,
           start: this.reservation.start + ' ' + this.reservation.startTime,
-          end: this.reservation.end + ' ' + this.reservation.endTime
+          end: this.reservation.end + ' ' + this.reservation.endTime,
+          amount: this.reservation.amount
         }).then(response => {
           this.reservationShow = false
+          this.loading = false
+          this.$q.notify({
+            message: 'Reserva creada',
+            color: 'green-4',
+            textColor: 'white',
+            icon: 'check_circle_outline'
+          })
+          this.reservation = {}
           this.reservationGet()
         }).catch(error => {
           this.$q.notify({

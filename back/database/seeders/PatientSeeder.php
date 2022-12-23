@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Patient;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -19,12 +20,11 @@ class PatientSeeder extends Seeder
             'name'=>"Juan Esteban",
             'lastname'=>"Lopez Calee",
             'sex'=>"MASCULINO",
-            'phone'=>"69754564",
+            'phone'=>"69603027",
             'email'=>"juan@gmail.com",
             'address'=>"avenida dn",
             'birthday'=>"2000-01-01",
             'hospital_id'=>"1"
         ]);
-
     }
 }

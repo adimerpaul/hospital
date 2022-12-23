@@ -18,6 +18,7 @@ return new class extends Migration
             $table->dateTime('start');
             $table->dateTime('end');
             $table->string('description');
+            $table->double('amount',11,2);
             $table->string('status');
             $table->foreignId('patient_id')->constrained();
             $table->foreignId('user_id')->constrained();

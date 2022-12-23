@@ -13,6 +13,7 @@ class Reservations extends Model
         'end',
         'description',
         'status',
+        'amount',
         'patient_id',
         'user_id',
         'hospital_id',

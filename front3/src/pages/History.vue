@@ -1,26 +1,26 @@
 <template>
 <q-page>
   <div class="row q-pa-xs">
-    <div class="col-12 col-md-5">
+    <div class="col-12 col-md-4">
       <div class="row">
         <div class="col-12">
-          <div class="text-uppercase text-h4 text-bold text-grey text-center">{{patient.name}} {{patient.lastname}}</div>
+          <div class="text-uppercase text-h4 text-bold text-center">{{patient.name}} {{patient.lastname}}</div>
         </div>
-        <div class="col-6 q-my-xs col-md-6 text-right text-bold q-pr-xs">F. de Nacimiento:</div>
-        <div class="col-6 q-my-xs col-md-6"><div class="text-left text-bold text-grey" v-if="patient.birthday!=undefined">{{formatDate(patient.birthday)}}</div></div>
-        <div class="col-6 q-my-xs col-md-6 text-right text-bold q-pr-xs">Edad:</div>
-        <div class="col-6 q-my-xs col-md-6"><div class="text-left text-bold text-grey" v-if="patient.birthday!=undefined">{{formatDateAge(patient.birthday)}}</div></div>
-        <div class="col-6 q-my-xs col-md-6 text-right text-bold q-pr-xs">Sexo:</div>
-        <div class="col-6 q-my-xs col-md-6"><div class="text-left text-bold text-grey text-lowercase">{{(patient.sex)}}</div></div>
-        <div class="col-6 q-my-xs col-md-6 text-right text-bold q-pr-xs">Direccion:</div>
-        <div class="col-6 q-my-xs col-md-6"><div class="text-left text-bold text-grey text-lowercase">{{(patient.address)}}</div></div>
-        <div class="col-6 q-my-xs col-md-6 text-right text-bold q-pr-xs">Correo:</div>
-        <div class="col-6 q-my-xs col-md-6"><div class="text-left text-bold text-grey">{{patient.email}}</div></div>
-        <div class="col-6 q-my-xs col-md-6 text-right text-bold q-pr-xs">Tel:</div>
-        <div class="col-6 q-my-xs col-md-6"><div class="text-left text-bold text-grey">{{patient.phone}}</div></div>
+        <div class="col-6 q-my-xs col-md-6 text-right text-bold q-pr-xs text-grey">F. de Nacimiento:</div>
+        <div class="col-6 q-my-xs col-md-6"><div class="text-left text-bold " v-if="patient.birthday!=undefined">{{formatDate(patient.birthday)}}</div></div>
+        <div class="col-6 q-my-xs col-md-6 text-right text-bold q-pr-xs text-grey">Edad:</div>
+        <div class="col-6 q-my-xs col-md-6"><div class="text-left text-bold " v-if="patient.birthday!=undefined">{{ $filters.ageMonthDays(patient.birthday) }}</div></div>
+        <div class="col-6 q-my-xs col-md-6 text-right text-bold q-pr-xs text-grey">Sexo:</div>
+        <div class="col-6 q-my-xs col-md-6"><div class="text-left text-bold">{{(patient.sex)}}</div></div>
+        <div class="col-6 q-my-xs col-md-6 text-right text-bold q-pr-xs text-grey">Direccion:</div>
+        <div class="col-6 q-my-xs col-md-6"><div class="text-left text-bold">{{(patient.address)}}</div></div>
+        <div class="col-6 q-my-xs col-md-6 text-right text-bold q-pr-xs text-grey">Correo:</div>
+        <div class="col-6 q-my-xs col-md-6"><div class="text-left text-bold ">{{patient.email}}</div></div>
+        <div class="col-6 q-my-xs col-md-6 text-right text-bold q-pr-xs text-grey">Tel:</div>
+        <div class="col-6 q-my-xs col-md-6"><div class="text-left text-bold ">{{patient.phone}}</div></div>
       </div>
     </div>
-    <div class="col-12 col-md-7">
+    <div class="col-12 col-md-8">
       <div class="row">
         <div class="col-6">
           <span :class="`${$q.screen.lt.md?'text-subtitle2':'text-h6'} text-bold text-center`">
@@ -53,6 +53,30 @@
                       </q-item-section>
                       <q-item-section>Eliminar</q-item-section>
                     </q-item>
+                    <q-item clickable v-close-popup :href="`${url}reportHistory/${props.row.id}`" target="_blank">
+                      <q-item-section avatar>
+                        <q-icon name="o_visibility" color="grey-8" />
+                      </q-item-section>
+                      <q-item-section>Ver Historial clinico</q-item-section>
+                    </q-item>
+                    <q-item clickable v-close-popup :href="`${url}reportReception/${props.row.id}`" target="_blank">
+                      <q-item-section avatar>
+                        <q-icon name="o_print" color="grey-8" />
+                      </q-item-section>
+                      <q-item-section>Reseta medica</q-item-section>
+                    </q-item>
+                    <q-item clickable v-close-popup :href="`https://api.whatsapp.com/send?phone=591${patient.phone}&text=${url}reportHistory/${props.row.id}`" target="_blank">
+                      <q-item-section avatar>
+                        <q-icon name="ion-logo-whatsapp" color="grey-8" />
+                      </q-item-section>
+                      <q-item-section>Historial clinico whatsapp</q-item-section>
+                    </q-item>
+                    <q-item clickable v-close-popup :href="`https://api.whatsapp.com/send?phone=591${patient.phone}&text=${url}reportReception/${props.row.id}`" target="_blank">
+                      <q-item-section avatar>
+                        <q-icon name="ion-logo-whatsapp" color="grey-8" />
+                      </q-item-section>
+                      <q-item-section>Receta medica whatsapp</q-item-section>
+                    </q-item>
                   </q-list>
                 </q-btn-dropdown>
               </q-td>
@@ -71,7 +95,7 @@
       </q-card-section>
       <q-card-section class="items-center q-pa-none" >
         <div class="row">
-          <div class="col-3 col-md-3 ">
+          <div class="col-2 col-md-2 ">
             <div class="row bg-primary">
               <div class="col-12">
                 <q-btn @click="aniateScroll(0,'weight')" label="Signos vitales" no-caps align="left" class="full-width bg-primary text-white" icon="favorite_outline" flat  />
@@ -109,7 +133,7 @@
               </div>
             </div>
           </div>
-          <div class="col-9 col-md-9 q-pa-xs" style="height: 80vh">
+          <div class="col-10 col-md-10 q-pa-xs" style="height: 80vh">
 <!--            <q-scroll-area class="full-width full-height">-->
 <!--              <div v-for="n in 100" :key="n" class="q-py-xs">-->
             <q-scroll-area class="full-width full-height" ref="scrollAreaRef">
@@ -130,10 +154,10 @@
                       <q-input dense outlined label="Temperatura" v-model="history.tem" />
                     </div>
                     <div class="col-6 col-md-2">
-                      <q-input readonly dense outlined label="IMC" v-model="caculateIMC" />
+                      <q-input readonly dense outlined label="IMC" v-model="calculateIMC" />
                     </div>
                     <div class="col-6 col-md-2">
-                      <q-input readonly dense outlined label="IMC" v-model="caculateIMCText" />
+                      <q-input readonly dense outlined label="IMC Clasificacion" v-model="calculateIMCText" />
                     </div>
                     <div class="col-6 col-md-2">
                       <q-input dense outlined label="Ten. Arterial" v-model="history.ta" />
@@ -144,27 +168,27 @@
                     <div class="col-6 col-md-2">
                       <q-input dense outlined label="Frec. Respiratoria" v-model="history.fr" />
                     </div>
-                    <div class="col-6 col-md-2">
-                      <q-select dense outlined label="Tipo de sangre" v-model="history.blood" :options="[ 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-' ]" />
-                    </div>
+<!--                    <div class="col-6 col-md-2">-->
+<!--                      <q-select dense outlined label="Tipo de sangre" v-model="history.blood" :options="[ 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-' ]" />-->
+<!--                    </div>-->
                   </div>
                 </div>
-                <div class="col-12 bg-primary q-pa-xs text-white"> <q-icon name="help_outline" /> Prenguntas ginecologicas</div>
+                <div class="col-12 bg-primary q-pa-xs text-white"> <q-icon name="help_outline" /> Preguntas ginecologicas</div>
                 <div class="col-12">
                   <div class="row">
                     <div class="col-6 col-md-2">
                       <div> ¿Esta embarazada? </div>
-                      <q-radio dense v-model="history.pregnant" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="Si" label="SI" />
-                      <q-radio dense v-model="history.pregnant" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="No" label="No" />
+                      <q-radio dense v-model="history.pregnant" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="SI" label="SI" />
+                      <q-radio dense v-model="history.pregnant" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="NO" label="NO" />
                     </div>
-                    <div class="col-6 col-md-2">
-                      <q-input dense outlined label="FUM" v-model="history.fum" ref="fum" />
+                    <div class="col-6 col-md-2" v-if="history.pregnant=='SI'">
+                      <q-input dense outlined  v-model="history.fum" ref="fum" label="Fecha de ultima menstruacion" type="date" />
                     </div>
-                    <div class="col-6 col-md-2">
-                      <q-input dense outlined label="SDG" v-model="history.sdg" />
+                    <div class="col-6 col-md-2" v-if="history.pregnant=='SI'">
+                      <q-input dense outlined readonly  v-model="calculateGestation" label="Semanas de gestacion" />
                     </div>
-                    <div class="col-6 col-md-2">
-                      <q-input dense outlined label="FU" v-model="history.fu" />
+                    <div class="col-6 col-md-2" v-if="history.pregnant=='SI'">
+                      <q-input dense outlined v-model="history.fu" label="Fondo uterino" />
                     </div>
                   </div>
                 </div>
@@ -173,19 +197,19 @@
                   <div class="row">
                     <div class="col-6 col-md-4">
                       <div> ¿Fuma? </div>
-                      <q-radio dense v-model="history.smoker" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="Si" label="SI" />
-                      <q-radio dense v-model="history.smoker" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="No" label="No" />
+                      <q-radio dense v-model="history.smoker" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="SI" label="SI" />
+                      <q-radio dense v-model="history.smoker" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="NO" label="NO" />
                     </div>
-                    <div class="col-6 col-md-8">
-                      <q-input dense outlined label="Especificaciones de fumador" ref="smokerDescription" v-model="history.smokerDescription" />
+                    <div class="col-6 col-md-8" >
+                      <q-input v-if="history.smoker=='SI'" dense outlined label="Especificaciones de fumador" ref="smokerDescription" v-model="history.smokerDescription" />
                     </div>
                     <div class="col-6 col-md-4">
                       <div> ¿Toma alcohol? </div>
-                      <q-radio dense v-model="history.alcohol" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="Si" label="SI" />
-                      <q-radio dense v-model="history.alcohol" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="No" label="No" />
+                      <q-radio dense v-model="history.alcohol" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="SI" label="SI" />
+                      <q-radio dense v-model="history.alcohol" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="NO" label="NO" />
                     </div>
-                    <div class="col-6 col-md-8">
-                      <q-input dense outlined label="Especificaciones de alcohol" v-model="history.alcoholDescription" />
+                    <div class="col-6 col-md-8" >
+                      <q-input v-if="history.alcohol=='SI'" dense outlined label="Especificaciones de alcohol" v-model="history.alcoholDescription" />
                     </div>
                   </div>
                 </div>
@@ -297,15 +321,16 @@ export default {
       hoy: date.formatDate(new Date(), 'YYYY-MM-DD'),
       history: {
         date: date.formatDate(new Date(), 'YYYY-MM-DD'),
+        fum: date.formatDate(new Date(), 'YYYY-MM-DD'),
         note: '',
         weight: '',
         height: '',
         exploration: '',
         observations: '',
-        smoker: 'No',
+        smoker: 'NO',
         smokerDescription: '',
-        pregnant: 'No',
-        alcohol: 'No',
+        pregnant: 'NO',
+        alcohol: 'NO',
         alcoholDescription: '',
         prescription1: '',
         prescription2: '',
@@ -373,7 +398,7 @@ export default {
         title: 'Eliminar',
         message: '¿Estas seguro de eliminar esta historia clinica?',
         ok: 'Si',
-        cancel: 'No'
+        cancel: 'NO'
       }).onOk(() => {
         this.loading = true
         this.$api.delete('queries/' + history.id)
@@ -437,15 +462,16 @@ export default {
     historyAddClick () {
       this.history = {
         date: date.formatDate(new Date(), 'YYYY-MM-DD'),
+        fum: date.formatDate(new Date(), 'YYYY-MM-DD'),
         note: '',
         weight: '',
         height: '',
         exploration: '',
         observations: '',
-        smoker: 'No',
+        smoker: 'NO',
         smokerDescription: '',
-        pregnant: 'No',
-        alcohol: 'No',
+        pregnant: 'NO',
+        alcohol: 'NO',
         alcoholDescription: '',
         prescription1: '',
         prescription2: '',
@@ -499,7 +525,20 @@ export default {
     }
   },
   computed: {
-    caculateIMC () {
+    calculateGestation () {
+      if (this.history.fum) {
+        const fum = moment(this.history.fum)
+        const today = moment()
+        const gestation = today.diff(fum, 'weeks')
+        if (gestation < 50) {
+          return gestation
+        } else {
+          return 0
+        }
+      }
+      return 0
+    },
+    calculateIMC () {
       const imc = (this.history.weight / (this.history.height * this.history.height)).toFixed(2)
       if (isNaN(imc)) {
         return 0
@@ -507,7 +546,7 @@ export default {
         return imc
       }
     },
-    caculateIMCText () {
+    calculateIMCText () {
       const imc = (this.history.weight / (this.history.height * this.history.height)).toFixed(2)
       if (isNaN(imc)) {
         return 'Sin datos'
