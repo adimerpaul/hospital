@@ -215,10 +215,29 @@
                 </div>
                 <div class="col-12 bg-primary q-pa-xs text-white"> <q-icon name="o_note" />
                   Notas medicas
-                  <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('note')" />
+<!--                  <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('note')" />-->
                 </div>
                 <div class="col-12">
-                  <q-input dense outlined label="Notas medicas" v-model="history.note" type="textarea" ref="note" />
+                  <q-input dense outlined label="Diagnostico 1" v-model="history.note1" ref="note" >
+                    <template v-slot:append>
+                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('note1')" />
+                    </template>
+                  </q-input>
+                  <q-input dense outlined label="Diagnostico 2" v-model="history.note2" >
+                    <template v-slot:append>
+                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('note2')" />
+                    </template>
+                  </q-input>
+                  <q-input dense outlined label="Diagnostico 3" v-model="history.note3" >
+                    <template v-slot:append>
+                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('note3')" />
+                    </template>
+                  </q-input>
+                  <q-input dense outlined label="Diagnostico 4" v-model="history.note4" >
+                    <template v-slot:append>
+                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('note4')" />
+                    </template>
+                  </q-input>
                 </div>
                 <div class="col-12 bg-primary q-pa-xs text-white"> <q-icon name="speed" />
                   Exploracion fisica
@@ -227,33 +246,45 @@
                 <div class="col-12">
                   <q-input dense outlined label="Exploracion fisica" v-model="history.exploration" type="textarea" ref="exploration" />
                 </div>
-                <div class="col-12 bg-primary q-pa-xs text-white"> <q-icon name="o_description" />Receta Medica</div>
-                <div class="col-12">
-                  <q-input dense outlined label="Receta medica 1" ref="prescription1" v-model="history.prescription1">
-                    <template v-slot:append>
-                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('prescription1')" />
-                    </template>
-                  </q-input>
-                  <q-input dense outlined label="Receta medica 2" v-model="history.prescription2">
-                    <template v-slot:append>
-                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('prescription2')" />
-                    </template>
-                  </q-input>
-                  <q-input dense outlined label="Receta medica 3" v-model="history.prescription3">
-                    <template v-slot:append>
-                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('prescription3')" />
-                    </template>
-                  </q-input>
-                  <q-input dense outlined label="Receta medica 4" v-model="history.prescription4">
-                    <template v-slot:append>
-                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('prescription4')" />
-                    </template>
-                  </q-input>
-                  <q-input dense outlined label="Receta medica 5" v-model="history.prescription5">
-                    <template v-slot:append>
-                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('prescription5')" />
-                    </template>
-                  </q-input>
+                <div class="col-12 bg-primary q-pa-xs text-white">
+                  <q-icon name="o_description" />
+                  Receta Medica <q-btn dense flat :loading="loading" icon="add_circle_outline" @click="addPrescription" />
+                </div>
+                <div class="col-12 q-pa-xs">
+                  <template v-for="(m,i) in queryMedicines" :key="i">
+                    <div class="row">
+                      <div class="col-12 text-bold">
+                        <q-btn flat dense rounded icon="o_edit" />
+                        <q-btn flat dense rounded icon="o_delete" />
+                        {{i+1}}.- {{m.name}} {{m.number}} {{m.unit}} {{m.times}} {{m.via}}
+                      </div>
+                    </div>
+                  </template>
+<!--                  <q-input dense outlined label="Receta medica 1" ref="prescription1" v-model="history.prescription1">-->
+<!--                    <template v-slot:append>-->
+<!--                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('prescription1')" />-->
+<!--                    </template>-->
+<!--                  </q-input>-->
+<!--                  <q-input dense outlined label="Receta medica 2" v-model="history.prescription2">-->
+<!--                    <template v-slot:append>-->
+<!--                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('prescription2')" />-->
+<!--                    </template>-->
+<!--                  </q-input>-->
+<!--                  <q-input dense outlined label="Receta medica 3" v-model="history.prescription3">-->
+<!--                    <template v-slot:append>-->
+<!--                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('prescription3')" />-->
+<!--                    </template>-->
+<!--                  </q-input>-->
+<!--                  <q-input dense outlined label="Receta medica 4" v-model="history.prescription4">-->
+<!--                    <template v-slot:append>-->
+<!--                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('prescription4')" />-->
+<!--                    </template>-->
+<!--                  </q-input>-->
+<!--                  <q-input dense outlined label="Receta medica 5" v-model="history.prescription5">-->
+<!--                    <template v-slot:append>-->
+<!--                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('prescription5')" />-->
+<!--                    </template>-->
+<!--                  </q-input>-->
                 </div>
                 <div class="col-12 bg-primary q-pa-xs text-white"> <q-icon name="o_contact_support" />
                   Observaciones
@@ -281,7 +312,38 @@
       </q-card-section>
     </q-card>
   </q-dialog>
-
+  <q-dialog v-model="medicineDialog">
+    <q-card>
+      <q-form @submit.prevent="addMedicines">
+        <q-card-section class="row items-center">
+          <div class="text-h6">Medicamentos</div>
+        </q-card-section>
+        <q-card-section>
+          <div class="row">
+            <div class="col-12">
+              <q-select dense required outlined label="Medicamento" v-model="medicine.name" :options="medicines" />
+            </div>
+            <div class="col-12">
+              <q-select dense required outlined label="Cantidad" v-model="medicine.number" :options="numbers" />
+            </div>
+            <div class="col-12">
+              <q-select dense required outlined label="Unidad" v-model="medicine.unit" :options="units" />
+            </div>
+            <div class="col-12">
+              <q-select dense required outlined label="Frecuencia" v-model="medicine.times" :options="times" />
+            </div>
+            <div class="col-12">
+              <q-select dense required outlined label="Via de administracion" v-model="medicine.via" :options="vias" />
+            </div>
+          </div>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn flat label="Cancelar" color="primary" @click="medicineDialog = false" />
+          <q-btn label="Guardar" color="primary" type="submit" />
+        </q-card-actions>
+      </q-form>
+    </q-card>
+  </q-dialog>
 </q-page>
 </template>
 <script>
@@ -293,6 +355,8 @@ export default {
   name: 'HistoryItem',
   data () {
     return {
+      medicineDialog: false,
+      medicine: {},
       summaries: [
         'ACCIDENTE DE TRABAJO',
         'ACCIDENTE DE TRANSITO',
@@ -319,25 +383,7 @@ export default {
       historyShow: false,
       url: process.env.API,
       hoy: date.formatDate(new Date(), 'YYYY-MM-DD'),
-      history: {
-        date: date.formatDate(new Date(), 'YYYY-MM-DD'),
-        fum: date.formatDate(new Date(), 'YYYY-MM-DD'),
-        note: '',
-        weight: '',
-        height: '',
-        exploration: '',
-        observations: '',
-        smoker: 'NO',
-        smokerDescription: '',
-        pregnant: 'NO',
-        alcohol: 'NO',
-        alcoholDescription: '',
-        prescription1: '',
-        prescription2: '',
-        prescription3: '',
-        prescription4: '',
-        prescription5: ''
-      },
+      history: {},
       histories: [],
       historyColumns: [
         { name: 'options', label: 'Opciones', field: 'options', sortable: true },
@@ -350,10 +396,21 @@ export default {
       isRecording: false,
       Recognition: window.SpeechRecognition || window.webkitSpeechRecognition,
       sr: null,
-      type: ''
+      type: '',
+      queryMedicines: [],
+      medicines: [],
+      numbers: [],
+      units: [],
+      times: [],
+      vias: []
     }
   },
   created () {
+    this.medicinesGet()
+    this.numbersGet()
+    this.unitsGet()
+    this.timesGet()
+    this.viasGet()
     this.sr = new this.Recognition()
     this.sr.continuous = true
     this.sr.interimResults = true
@@ -364,8 +421,8 @@ export default {
         const transcript = e.results[i][0].transcript
         if (e.results[i].isFinal) {
           this.loading = false
-          if (this.type === 'note') {
-            this.history.note += transcript
+          if (this.type === 'note1') {
+            this.history.note1 += transcript
           } else if (this.type === 'exploration') {
             this.history.exploration += transcript
           } else if (this.type === 'observations') {
@@ -380,6 +437,14 @@ export default {
             this.history.prescription4 += transcript
           } else if (this.type === 'prescription5') {
             this.history.prescription5 += transcript
+          } else if (this.type === 'note1') {
+            this.history.note1 += transcript
+          } else if (this.type === 'note2') {
+            this.history.note2 += transcript
+          } else if (this.type === 'note3') {
+            this.history.note3 += transcript
+          } else if (this.type === 'note4') {
+            this.history.note4 += transcript
           }
         }
       }
@@ -388,6 +453,49 @@ export default {
     this.patientGet()
   },
   methods: {
+    addMedicines () {
+      this.queryMedicines.push(this.medicine)
+      this.medicine = {}
+      this.medicineDialog = false
+    },
+    addPrescription () {
+      this.medicineDialog = true
+    },
+    medicinesGet () {
+      this.$api.get('medicines').then(res => {
+        this.medicines = res.data.map(medicine => {
+          return medicine.name
+        })
+      })
+    },
+    numbersGet () {
+      this.$api.get('numbers').then(res => {
+        this.numbers = res.data.map(number => {
+          return number.name
+        })
+      })
+    },
+    unitsGet () {
+      this.$api.get('units').then(res => {
+        this.units = res.data.map(medicine => {
+          return medicine.name
+        })
+      })
+    },
+    timesGet () {
+      this.$api.get('times').then(res => {
+        this.times = res.data.map(medicine => {
+          return medicine.name
+        })
+      })
+    },
+    viasGet () {
+      this.$api.get('vias').then(res => {
+        this.vias = res.data.map(medicine => {
+          return medicine.name
+        })
+      })
+    },
     editHistory (history) {
       this.history = history
       this.historyCreate = false
@@ -460,10 +568,14 @@ export default {
       return moment(time, 'HH:mm:ss').format('hh:mm a')
     },
     historyAddClick () {
+      this.queryMedicines = []
       this.history = {
         date: date.formatDate(new Date(), 'YYYY-MM-DD'),
         fum: date.formatDate(new Date(), 'YYYY-MM-DD'),
-        note: '',
+        note1: '',
+        note2: '',
+        note3: '',
+        note4: '',
         weight: '',
         height: '',
         exploration: '',

@@ -31,4 +31,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('patients', \App\Http\Controllers\PatientController::class);
     Route::apiResource('reservations', \App\Http\Controllers\ReservationsController::class);
     Route::apiResource('queries', \App\Http\Controllers\QueryController::class);
+    Route::apiResource('medicines', \App\Http\Controllers\MedicineController::class);
+    Route::apiResource('numbers', \App\Http\Controllers\NumberController::class);
+    Route::apiResource('times', \App\Http\Controllers\TimeController::class);
+    Route::apiResource('units', \App\Http\Controllers\UnitController::class);
+    Route::apiResource('vias', \App\Http\Controllers\ViaController::class);
 });

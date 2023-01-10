@@ -35,14 +35,18 @@ return new class extends Migration
             $table->string('alcohol')->nullable();
             $table->string('alcoholDescription')->nullable();
 
-            $table->string('note')->nullable();
+            $table->string('note1')->nullable();
+            $table->string('note2')->nullable();
+            $table->string('note3')->nullable();
+            $table->string('note4')->nullable();
+
             $table->string('exploration')->nullable();
 
-            $table->string('prescription1')->nullable();
-            $table->string('prescription2')->nullable();
-            $table->string('prescription3')->nullable();
-            $table->string('prescription4')->nullable();
-            $table->string('prescription5')->nullable();
+//            $table->string('prescription1')->nullable();
+//            $table->string('prescription2')->nullable();
+//            $table->string('prescription3')->nullable();
+//            $table->string('prescription4')->nullable();
+//            $table->string('prescription5')->nullable();
 
             $table->text('observations')->nullable();
 

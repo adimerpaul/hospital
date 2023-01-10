@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+//use App\Models\Unit;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -26,6 +27,11 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             PatientSeeder::class,
             ProductSeeder::class,
+            MedicineSeeder::class,
+            NumberSeeder::class,
+            TimeSeeder::class,
+            UnitSeeder::class,
+            ViaSeeder::class,
         ]);
     }
 }

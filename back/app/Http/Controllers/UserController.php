@@ -59,7 +59,7 @@ class UserController extends Controller
         $credentials = request(['email','password']);
         if(!auth()->attempt($credentials)){
             return response()->json([
-                'message'=>'Unauthorized'
+                'message'=>'Credenciales incorrectas'
             ],401);
         }
         $user = User::with('hospital')->find(auth()->user()->id);
