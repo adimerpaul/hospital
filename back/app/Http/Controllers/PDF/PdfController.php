@@ -11,6 +11,15 @@ class PdfController
     function history($id){
         $query=Query::where('id', $id)->with(['user', 'patient','hospital'])->first();
         $queries=Query::where('patient_id', $query->patient_id)->get();
+        $queryMedicinesText='';
+        $queryMedicines=$query->queryMedicines;
+        foreach ($queryMedicines as $queryMedicine){
+            $queryMedicinesText.='<tr>
+                    <td colspan="4">
+                        <div class=" text-h4">'.$queryMedicine->medicine.'  '.$queryMedicine->amount.' '.$queryMedicine->note.' '.$queryMedicine->number.' '.$queryMedicine->unit.' '.$queryMedicine->time.' '.$queryMedicine->via.' '.$queryMedicine->diagnosis.'</div>
+                    </td>
+                </tr>';
+        }
 
         $url = env('URL_BACK')."reportHistory/".$id;
         $qrcode = base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($url));
@@ -244,7 +253,16 @@ class PdfController
                 </tr>
                 <tr>
                     <td colspan="4">
-                        <div>'.$query->note.'</div>
+                        <div>'.$query->note1.'</div>
+                    </td>
+                    <td colspan="4">
+                        <div>'.$query->note2.'</div>
+                    </td>
+                    <td colspan="4">
+                        <div>'.$query->note3.'</div>
+                    </td>
+                    <td colspan="4">
+                        <div>'.$query->note4.'</div>
                     </td>
                 </tr>
                 <tr>
@@ -262,31 +280,7 @@ class PdfController
                         <div class="bold text-h5"> <i>RECETA MEDICA</i></div>
                     </td>
                 </tr>
-                <tr>
-                    <td colspan="4">
-                        <div>'.$query->prescription1.'</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4">
-                        <div>'.$query->prescription2.'</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4">
-                        <div>'.$query->prescription3.'</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4">
-                        <div>'.$query->prescription4.'</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4">
-                        <div>'.$query->prescription5.'</div>
-                    </td>
-                </tr>
+                '.$queryMedicinesText.'
                 <tr>
                     <td colspan="4">
                         <div class="bold text-h5"> <i>OBSEVACIONES</i></div>
@@ -316,6 +310,28 @@ class PdfController
                         <div>'.$query->action.'</div>
                     </td>
                 </tr>
+                                <tr>
+                    <td>
+                        <div class="bold right">RAYOS X - TOMOGRAFIA:</div>
+                    </td>
+                    <td>
+                        <div>'.$query->tomografias.'</div>
+                    </td>
+                    <td>
+                        <div class="bold right">ECOGRAFIA:</div>
+                    </td>
+                    <td>
+                        <div>'.$query->ecografias.'</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="bold right">LABORATORIOS:</div>
+                    </td>
+                    <td>
+                        <div>'.$query->laboratorios.'</div>
+                    </td>
+                </tr>
             </table>
         </td>
     </tr>';
@@ -326,7 +342,15 @@ class PdfController
     function reception($id){
         $query=Query::where('id', $id)->with(['user', 'patient','hospital'])->first();
         $queries=Query::where('patient_id', $query->patient_id)->get();
-
+        $queryMedicinesText='';
+        $queryMedicines=$query->queryMedicines;
+        foreach ($queryMedicines as $queryMedicine){
+            $queryMedicinesText.='<tr>
+                    <td colspan="4">
+                        <div class=" text-h4">'.$queryMedicine->medicine.'  '.$queryMedicine->amount.' '.$queryMedicine->note.' '.$queryMedicine->number.' '.$queryMedicine->unit.' '.$queryMedicine->time.' '.$queryMedicine->via.' '.$queryMedicine->diagnosis.'</div>
+                    </td>
+                </tr>';
+        }
         $url = env('URL_BACK')."reportReception/".$id;
         $qrcode = base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($url));
         $content='<tr>
@@ -380,31 +404,7 @@ class PdfController
                         <div class="bold text-h5"> <i>RECETA MEDICA</i></div>
                     </td>
                 </tr>
-                <tr>
-                    <td colspan="4">
-                        <div>'.$query->prescription1.'</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4">
-                        <div>'.$query->prescription2.'</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4">
-                        <div>'.$query->prescription3.'</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4">
-                        <div>'.$query->prescription4.'</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4">
-                        <div>'.$query->prescription5.'</div>
-                    </td>
-                </tr>
+                '.$queryMedicinesText.'
                 <tr>
                     <td colspan="4">
                         <div class="bold text-h5"> <i>OBSEVACIONES</i></div>

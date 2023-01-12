@@ -17,6 +17,7 @@ class NumberSeeder extends Seeder
     public function run()
     {
         DB::table('numbers')->insert([
+            ['name' => ''],
             ['name' => '1'],
             ['name' => '2'],
             ['name' => '3'],

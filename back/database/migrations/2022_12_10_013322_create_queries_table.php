@@ -52,6 +52,9 @@ return new class extends Migration
 
             $table->string('summary')->nullable();
             $table->string('action')->nullable();
+            $table->string('tomografias')->nullable();
+            $table->string('ecografias')->nullable();
+            $table->string('laboratorios')->nullable();
 
             $table->date('date');
             $table->time('time');

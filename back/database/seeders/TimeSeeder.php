@@ -16,6 +16,7 @@ class TimeSeeder extends Seeder
     public function run()
     {
         DB::table('times')->insert([
+            ["name"=>""],
             ["name"=>"2 veces al dia"],
             ["name"=>"3 veces al dia"],
             ["name"=>"Al acostarse"],

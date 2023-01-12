@@ -17,6 +17,7 @@ class UnitSeeder extends Seeder
     public function run()
     {
         DB::table('units')->insert([
+            ["name"=>""],
             ["name"=>"Ampolla"],
             ["name"=>"Aplicaion"],
             ["name"=>"Capsula"],

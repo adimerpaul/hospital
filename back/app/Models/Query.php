@@ -9,6 +9,7 @@ class Query extends Model
 {
     use HasFactory;
     protected $fillable=[
+        'patient_id',
         'weight',
         'height',
         'sat',
@@ -25,23 +26,28 @@ class Query extends Model
         'smokerDescription',
         'alcohol',
         'alcoholDescription',
-        'note',
+        'note1',
+        'note2',
+        'note3',
+        'note4',
         'exploration',
-        'prescription1',
-        'prescription2',
-        'prescription3',
-        'prescription4',
-        'prescription5',
         'observations',
         'summary',
         'action',
+
         'date',
         'time',
+
         'user_id',
         'hospital_id',
-        'patient_id',
+        'tomografias',
+        'ecografias',
+        'laboratorios',
     ];
     public function user(){return $this->belongsTo(User::class);}
     public function hospital(){return $this->belongsTo(Hospital::class);}
     public function patient(){return $this->belongsTo(Patient::class);}
+    public function queryMedicines(){
+        return $this->hasMany(QueryMedicine::class);
+    }
 }

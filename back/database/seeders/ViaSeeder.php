@@ -17,6 +17,7 @@ class ViaSeeder extends Seeder
     public function run()
     {
         DB::table('vias')->insert([
+            ["name"=>""],
             ["name"=>"Endovenosa"],
             ["name"=>"Intramuscular"],
             ["name"=>"Intravenosa"],

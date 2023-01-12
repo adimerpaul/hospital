@@ -254,12 +254,13 @@
                   <template v-for="(m,i) in queryMedicines" :key="i">
                     <div class="row">
                       <div class="col-12 text-bold">
-                        <q-btn flat dense rounded icon="o_edit" />
-                        <q-btn flat dense rounded icon="o_delete" />
-                        {{i+1}}.- {{m.name}} {{m.number}} {{m.unit}} {{m.times}} {{m.via}}
+                        <q-btn flat dense rounded icon="o_edit" @click="editPrescription(m)" />
+                        <q-btn flat dense rounded icon="o_delete" @click="deletePrescription(i)" />
+                        {{i+1}}.- {{m.name}} {{m.number}} {{m.unit}} {{m.times}} {{m.via}} {{m.diagnosis}}
                       </div>
                     </div>
                   </template>
+<!--                  <pre>{{queryMedicines}}</pre>-->
 <!--                  <q-input dense outlined label="Receta medica 1" ref="prescription1" v-model="history.prescription1">-->
 <!--                    <template v-slot:append>-->
 <!--                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('prescription1')" />-->
@@ -300,6 +301,15 @@
                 <div class="col-6">
                   <q-select dense outlined label="Medida de accion" v-model="history.action" :options="actions" />
                 </div>
+                <div class="col-6">
+                  <q-select clearable dense outlined label="RAYOS X - TOMOGRAFIA" multiple ref="summary" v-model="history.tomografias" :options="tomografias" />
+                </div>
+                <div class="col-6">
+                  <q-select clearable dense outlined label="ECOGRAFIA" multiple ref="summary" v-model="history.ecografias" :options="ecografias" />
+                </div>
+                <div class="col-6">
+                  <q-select clearable dense outlined label="laboratiorios" multiple ref="summary" v-model="history.laboratorios" :options="laboratorios" />
+                </div>
                 <div class="col-12">
                   <div><span class="text-subtitle2">Consulta Medica realizada por:</span> {{ store.user.name}} <span class="text-subtitle2"> en fecha:</span> {{ formatDate(hoy)}}</div>
                 </div>
@@ -313,27 +323,62 @@
     </q-card>
   </q-dialog>
   <q-dialog v-model="medicineDialog">
-    <q-card>
+    <q-card style="width: 750px;max-width: 80vh;height: 750px;max-height: 80vh;">
       <q-form @submit.prevent="addMedicines">
-        <q-card-section class="row items-center">
+        <q-card-section class="row items-center q-pb-none">
           <div class="text-h6">Medicamentos</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
-        <q-card-section>
+        <q-card-section class="q-pt-none">
           <div class="row">
-            <div class="col-12">
-              <q-select dense required outlined label="Medicamento" v-model="medicine.name" :options="medicines" />
+            <div class="col-12 q-pb-xs">
+              <q-table style="height: 400px" :rows-per-page-options="[0]" flat bordered title="Seleccionar medicamento" :columns="medicineColumns" dense :loading="loading" :rows="medicines" :filter="medicineFilter">
+                <template v-slot:top-right>
+                  <q-btn dense flat round icon="add_circle_outline" @click="addMedicine" />
+                  <q-input outlined dense v-model="medicineFilter" label="Buscar">
+                    <template v-slot:append>
+                      <q-icon name="search" />
+                    </template>
+                  </q-input>
+                </template>
+                <template v-slot:body="props">
+                  <q-tr :props="props" @click="medicine.name = props.row.name">
+                    <q-td key="options" auto-width>
+                      <q-btn dense flat round icon="edit" @click="editMedicine(props.row, props.rowIndex)" />
+                      <q-btn dense flat round icon="delete" @click="deleteMedicine(props.row, props.rowIndex)" />
+                    </q-td>
+                    <q-td key="name">
+                      <div class="cursor-pointer">{{ props.row.name }}</div>
+                    </q-td>
+                  </q-tr>
+                </template>
+                </q-table>
             </div>
             <div class="col-12">
-              <q-select dense required outlined label="Cantidad" v-model="medicine.number" :options="numbers" />
+              <div class="text-subtitle2 text-red">Medicamento seleccionado</div>
             </div>
-            <div class="col-12">
-              <q-select dense required outlined label="Unidad" v-model="medicine.unit" :options="units" />
+            <div class="col-12 col-sm-10">
+              <q-input dense options-dense required outlined label="Medicamento" v-model="medicine.name" />
             </div>
-            <div class="col-12">
-              <q-select dense required outlined label="Frecuencia" v-model="medicine.times" :options="times" />
+            <div class="col-6 col-sm-2">
+              <q-input dense options-dense required outlined label="Cantidad" v-model="medicine.number" :options="numbers" list="numbers" >
+                <datalist id="numbers">
+                  <option v-for="number in numbers" :key="number" :value="number" />
+                </datalist>
+              </q-input>
             </div>
-            <div class="col-12">
-              <q-select dense required outlined label="Via de administracion" v-model="medicine.via" :options="vias" />
+            <div class="col-6 col-sm-3">
+              <q-select dense options-dense required outlined label="Unidad" v-model="medicine.unit" :options="units" />
+            </div>
+            <div class="col-6 col-sm-3">
+              <q-select dense options-dense required outlined label="Frecuencia" v-model="medicine.times" :options="times" />
+            </div>
+            <div class="col-6 col-sm-3">
+              <q-select dense options-dense required outlined label="Via de administracion" v-model="medicine.via" :options="vias" />
+            </div>
+            <div class="col-6 col-sm-3">
+              <q-select dense options-dense outlined label="Diagnostico" v-model="medicine.diagnosis" :options="['',1,2,3,4]" />
             </div>
           </div>
         </q-card-section>
@@ -357,6 +402,372 @@ export default {
     return {
       medicineDialog: false,
       medicine: {},
+      ecografias: [
+        'ECOGRAFIA ABDOMINAL',
+        'ECOGRAFIA OBSTETRICA',
+        'ECOGRAFIA TRANSVAGINAL',
+        'ECOGRAFIA ABDOMINAL Y PELVICA',
+        'ECOGRAFIA RASTREO ABDOMINAL',
+        'ECOGRAFIA FAST',
+        'ECOGRAFIA HEPATOBILIOPANCREATICA',
+        'ECOGRAFIA RENOVESICAL PROSTATICA',
+        'ECOGRAFIA MAMARIA BILATERAL',
+        'ECOGRAFIA TIROIDEA',
+        'ECOGRAFIA TESTICULAR',
+        'ECOGRAFIA PARTES BLANDAS',
+        'ECOGRAFIA DOPPLER ARTERIAL POR MIEMBRO',
+        'ECOGRAFIA DOPPLER VENOSO POR MIEMBRO',
+        'OBSTETRICA AVANZADA VITALIDA FETAL',
+        'ECOGRAFIA CADERAS PEDIATRICO',
+        'ECOGRAFIA ESTRUCTURAL I,II Y III TRIMESTRE',
+        'ECOGRAFIA DOPLER OBSTETRICA',
+        'ECOGRAFIA 3D Y 4D',
+        'E',
+        'ECOGRAFIA OCULAR',
+        'ECOGRAFIA MUSCULO ESQUELETICA',
+        'PROCEDIMIENTOS GUIADOS POR ECOGRAFIA',
+        'ECOGRAFIA POR SEGUIMIENTO FOLICULAR',
+        'ECOGRAFIA GINECOLOGICA',
+        'ECOGRAFIA RENOVESICAL PRE Y POST MIXONARI',
+        'ECOGRAFIA CADERAS PEDIATRICO',
+        'ECOGRAFAI ESTRUCTURAL PRIMER TRIMESTRE',
+        'ECOGRAFAI ESTRUCTURAL SEGUNDO TRIMESTRE',
+        'ECOGRAFAI OBSTETRICA DOPPLER ',
+        'ECOGRAFIA 3D Y 4D ',
+        'ECOGRAFIA HEMITORAX',
+        'ECOGRAFIA PELVICA',
+        'ECOGRAFIA ESTRUCTURAL TERCER TRIMESTRE',
+        'ECOGRAFIA PULMONAR',
+        'ECOGRAFIA OCULAR',
+        'ECOGRAFIA MUSCULOESQUELETICA',
+        'PROCEDIMIENTOS GUIADOS POR ECOGRAFIA',
+        'ECOGRAFIA DE SEGUIMIENTO FOLICULAR (TRES ESTUDIOS)'
+      ],
+      laboratorios: [
+        'GLICEMIA - GLICEMIA BASAL',
+        'CURVA TOLERANCIA ORAL DE GLUCOSA',
+        'HEMOGLOBINA GLICOSILADA   -  HB A1c',
+        'AMILASA',
+        'LIPASA',
+        'CREATININA',
+        'UREA ',
+        'BUN - NUS  (NITROGENO UREICO) ',
+        'ÁCIDO ÚRICO',
+        'PROTEINURIA DE 24 HORAS',
+        'EXAMEN GENERAL DE ORINA (EGO)',
+        'CREATINURIA DE 24 HORAS',
+        'LIPIDOGRAMA - PERFIL LIPÍDICO (COSTO SIN VLDL)',
+        'COLESTEROL TOTAL',
+        'TRIGLICERIDOS',
+        'HDL COLESTEROL ',
+        'LDL COLESTEROL',
+        'VLDL COLESTEROL',
+        'HEPATOGRAMA - PERFIL HEPÁTICO - (COSTO SIN GGT)',
+        'FOSFATASA ALCALINA',
+        'BILIRRUBINAS (FRACCIONES) (DIRECTA, INDIRECTA, TOTAL)',
+        'GOT (TRANSAMINASA)',
+        'GPT (TRANSAMINASA)',
+        'GGT',
+        'BILIRRUBINA TRANSCUTANEA',
+        'ELECTROLITOS (Na, K, Cl) - IONOGRAMA ',
+        'SODIO',
+        'CLORO',
+        'POTASIO',
+        'CALCIO',
+        'FÓSFORO',
+        'MAGNESIO',
+        'PROTEINOGRAMA (Proteína + Albúmina)',
+        'PROTEINAS TOTALES',
+        'ALBUMINA',
+        'GLOBULINAS',
+        'REL. ALBUMINA/GLOBULINA',
+        'PERFIL CARDIACO',
+        'TROPONINA I',
+        'CPK TOTAL',
+        'CK - MB ',
+        'LDH ',
+        'TOMA DE MUESTRA PARA PLASMA RICO EN PLAQUETAS x TUBO',
+        'PCR (PROTEÍNA C REACTIVA)',
+        'FR (FACTOR RUMATOIDEO) (LATEX)',
+        'ASTO (ANTIESTREPTOLISINA)',
+        'REACCIÓN DE WIDALL (ANTIGENO FEBRIL)',
+        'VDRL - RPR - SIFILIS',
+        'HELICOBACTER PILORY (SANGRE)',
+        'HELICOBACTER PILORY  (HECES)',
+        'B-HCG (ORINA O SANGRE)',
+        'VIH (PRUEBA RÁPIDA)',
+        'HEPATITIS "A"  (HAV)',
+        'HEPATITIS "B" (HBsAg)',
+        'HEPATITIS "C" (HVC)',
+        'HAI CHAGAS',
+        'HAI TOXOPLASMOSIS',
+        'HEMOGRAMA',
+        'HEMOGRAMA COMPLETO + VES',
+        'HEMATOCRITO + HEMOGLOBINA',
+        'LEUCOGRAMA',
+        'GRUPO SANGUÍNEO Y FACTOR',
+        'RETICULOCITOS',
+        'TUBO VACUTAINER',
+        'COAGULOGRAMA (COSTO SIN PLAQUETAS)',
+        'TIEMPO DE PROTROMBINA + INR + ACT%',
+        'TIEMPO DE COAGULACIÓN',
+        'TIEMPO DE SANGRÍA',
+        'RECUENTO DE PLAQUETAS (PQ)',
+        'EXAMEN DE SECRECIÓN VAGINAL + TINCIÓN GRAM',
+        'EXAMEN DE SECRECIÓN URETRAL + TINCION GRAM',
+        'TAMIZAJE NEONATAL (PAQUETE DE 4 PRUEBAS)',
+        'TSH NEONATAL - TAMISAJE HIPOTIROIDISMO',
+        'PESQUIZA PRENATAL (DUO DE MATERNIDAD)',
+        'PESQUIZA PRENATAL (TRIO DE MATERNIDAD)',
+        'SANGRE OCULTA EN HECES',
+        'TINCIÓN GRAM',
+        'REACCIÓN DE BENEDITC Y PH',
+        'MOCO FECAL',
+        'COPROPARASITOLÓGICO SIMPLE',
+        'COPROPARASITOLÓGICO SERIADO',
+        'GASOMETRIA ARTERIAL CON LACTATO',
+        'GASOMETRIA ARTERIAL CON ELECTROLITOS',
+        'PRUEBA RÁPIDA COVID 19 (CUALITATIVA)',
+        'PRUEBA COVID 19 (INMUNOFLUORESCENCIA)(CUANTIFICADO)',
+        'ACTH ',
+        'ADA EN LIQUIDOS',
+        'ADENOVIRUS',
+        'ALCOHOLEMIA',
+        'ALFA FETO PROTEINA ----AFP',
+        'AMEBAS ELISAS',
+        'ANA',
+        'ANCA C',
+        'ANCA P ',
+        'ANTI CCP',
+        'ANTI DNA',
+        'ANTI TG',
+        'ANTIGENO PARA HELICOBACTER PYLORI EN HECES',
+        'BACILOSCOPIA ',
+        'BACTERISCOPIA DE SECRECION',
+        'CA -125',
+        'CA 15 -3 ',
+        'CA 19 - 9',
+        'CEA - CARCINOEMBRINARIO',
+        'CELULA L.E.',
+        'CHAGAS ELISA',
+        'CISTICERCOSIS',
+        'CITOMEGALOVIRUS IGG',
+        'CITOMEGALOVIRUS IGM',
+        'CITOQUIMICO DE LIQUIDOS',
+        'CLAMIDIA IGG',
+        'CLAMIDIA IGM',
+        'COMPLEMENTO C3',
+        'COMPLEMENTO C4',
+        'COPROCULTIVO Y ANTIBIOGRAMA',
+        'CORTISOL AM-PM ',
+        'CULTIVO DE SECRECIONES Y ANTIBIOGRAMA',
+        'DHEAS',
+        'DIMERO D',
+        'EIPSTEN  BARR IGG',
+        'EIPSTEN  BARR IGM',
+        'ENA PROFILE ',
+        'ESTRADIOL',
+        'FERRITINA',
+        'HORMONA FOLICULO ESTIMULANTE (FSH)',
+        'GIARDIA ELISAS',
+        'HCG CUANTITATIVO',
+        'HELICOBACTER PYLORI IGG',
+        'HELICOBACTER PYLORI IGM',
+        'HEMOCULTIVO',
+        'HEMOCULTIVO X 2 (SERIADO)',
+        'HEPATITIS C',
+        'HERPES VIRUS IGG',
+        'HERPES VIRUS IGM',
+        'HIDATIDOSIS',
+        'HIERRO POR ELISA',
+        'HORMONA DE CRECIMIENTO ',
+        'INMUNOGLOBULINA IgA',
+        'INMUNOGLOBULINA IgE',
+        'INMUNOGLOBULINA IgM',
+        'INSULINA',
+        'HORMONA LUTEINIZANTE (LH)',
+        'PANEL MULTIDROGAS',
+        'PARATHORMONA',
+        'PCR ULTRASENSIBLE',
+        'PROGESTERONA',
+        'PROLACTINA',
+        'PSA LIBRE',
+        'PSA TOTAL',
+        'ROTAVIRUS',
+        'RUBEOLA IGG',
+        'RUBEOLA IGM',
+        'SEMINOGRAMA - ESPERMIOGRAMA',
+        'T3',
+        'T4 LIBRE',
+        'TEST DE CRISTALIZACION',
+        'TESTOSTERONA',
+        'TOXOPLASMOSIS IGG',
+        'TOXOPLASMOSIS IGM',
+        'TPO',
+        'TRANSFERRINA',
+        'TSH ADULTO ',
+        'UROCULTIVO Y ANTIBIOGRAMA',
+        'VIH ELISA',
+        'ANTIGENO NASAL COVID',
+        'ANTI TGO',
+        'ANTI TPO',
+        'APTT - TPTA',
+        'CALPROTECTINA',
+        'ESTROGENO',
+        'FIBRINOGENO',
+        'MICROALBUMINURIA',
+        'PERFIL TIROIDEO COMPLETO',
+        'RETROCULTIVO',
+        'T4 TOTAL',
+        'TGO',
+        'TIROGLOBULINA',
+        'PROCALCITONINA',
+        'ANTI CCP',
+        'INTERLEUCINA - 6 (IL-6)',
+        'TRIPLE CARDIACO (MIOGLUBINA/TROPONINA I/CK MB)',
+        'LAB-PAQUETE GINECOLOGICO',
+        'TORCH',
+        'ACIDO URICO',
+        'PCR - RT COVID',
+        'ANTIGENO NASAL SEGUROS',
+        'GASOMETRIA ARTERIAL CON ELECTROLITOS SEGUROS',
+        'GASOMETRIA ARTERIAL CON LACTATO SEGUROS',
+        'TEST GRAHAM(TEST TAPE)',
+        'HEPATITIS B ELISA',
+        'AMONIO',
+        'COOMBS DIRECTO',
+        'COOMBD INDIRECTO',
+        'CITOQUÍMICO DE LIQUIDO SINOVIAL',
+        'CITOQUIMICO DE LIQUIDO ASCITICO O PERITONEAL',
+        'CITOQUIMICO DE LIQUIDO PLEURAL',
+        'CITOQUIMICO DE LIQUIDO PERICARDICO',
+        'CITOQUIMICO DE LCR',
+        'TIEMPO DE TROMBINA - TT',
+        'MICROALBUMINURIA - MICROALBÚMINA EN ORINA DE 24 HORAS U ORINA OCASIONAL',
+        'RELACIÓN CREATINURIA/ALBUMINURIA',
+        'FRUCTOSAMINA',
+        'LIPIDOS TOTALES',
+        'ANTICUERPO ANTICARDIOLIPINA IGG - IGM',
+        'MIOGLOBINA',
+        'NT-proBNP (NT-PROPÉPTIDO NATRIURÉTICO CEREBRAL)',
+        'HIERRO',
+        'TICB + SATURACIÓN DE TRANSFERRINA',
+        'TSH ULTRASENSIBLE',
+        'TSH - TIROTROPINA',
+        'T3 LIBRE',
+        'ANTI-TIROGLOBULINA / ANTI TG',
+        'ANTI-PEROXIDASA / ANTI TPO',
+        'HORMONA ANTIMULLERIANA (AHM)',
+        'TESTOSTERONA LIBRE',
+        '17-HIDROXIPROGESTERONA',
+        'VITAMINA D3 - COLECALCIFEROL',
+        'ANTI CCP - CLIA',
+        'ANA (ANTICUERPOS ANTINUCLEARES)',
+        'PERFIL ENA (SS-A, SS-B, Scl-70, Jo-1, rnp, Sm)',
+        'PEPTIDO C',
+        'UROCULTIVO',
+        'COPROCULTIVO',
+        'ESPERMOCULTIVO',
+        'CULTIVO DE SECRECIÓN VAGINAL',
+        'CULTIVO DE SECRECIÓN URETRAL',
+        'CULTIVO DE ESPUTO',
+        'CULTIVO DE HISOPADO FARINGEO',
+        'CULTIVO DE ABCESOS',
+        'CULTIVO DE PUNTA DE CATETER',
+        'BACILOSCOPIA SIMPLE EN ESPUTO - BK ESPUTO',
+        'BACILOSCOPIA SERIADA EN ESPUTO - BK (2MUESTRAS)',
+        'COCAINA',
+        'MARIHUANA',
+        'COVID - 19 PCR + TOMA DE MUESTRA',
+        'SIFILIS ELISA',
+        'B 2 MICROGLOBULINA'
+      ],
+      tomografias: [
+        'Test de Farrell (2 años) # 1 - 14 x 17',
+        'Pelvis entrada y salida (adulto) # 2 - 14 x 17',
+        'Histerosalpingografia # 1 - 11 x 14',
+        'Colangiografía # 1 - 8 x 10',
+        'Cráneo AP- LAT. # 1 - 11 x 14',
+        'Huesos propios de la Nariz # 1 - 8 x 10',
+        'Senos Paranasales MNP- FNP # 2 - 8 x 10',
+        'Watters – Cadwell # 1 - 8 x 10',
+        'Maxilar Inferior frente # 1 - 8 x 10',
+        'Hirtz - towne o base de cráneo # 1 - 8 x 10',
+        'Columna cervical AP- LAT. # 1 - 11 x 14',
+        'Columna Cervical dinamicas # 1 - 11 x 14',
+        'Columna Dorsal AP- LAT. # 1 - 14 x 17',
+        'Columna Lumbar AP- LAT. # 1 - 14 x 17',
+        'Columna sacro coccix AP- LAT. # 1 - 11 x 14',
+        'Tórax PA # 1 - 14 x 17',
+        'Torax LAT # 1 - 14 x 17',
+        'Hemitorax o Parrilla costal # 1 - 14 x 17',
+        'Abdomen Simple o de pie # 1 - 14 x 17',
+        'Pelvis o Cadera (adulto) # 1 - 14 x 17',
+        'Pelvis Obturatriz - Alar # 1 - 14 x 17',
+        'Femur AP- LAT # 1 - 14 x 17',
+        'Pierna AP- LAT # 1 - 14 x 17',
+        'Brazo o Humero AP- LAT # 1 - 14 x 17',
+        'Antebrazo AP- LAT # 1 - 14 x 17',
+        'Pelvis o Cadera (niño) # 1 - 8 x 10',
+        'Rodilla AP- LAT # 1 - 11 x 14',
+        'Pie AP- OBL o LAT # 1 - 11 x 24',
+        'Mano PA- OBL o LAT # 1 - 11 x 14',
+        'Axiales de rotulas 60 ", 45 ", 30 # 1 - 8 x 10',
+        'Tobillo AP- LAT # 1 - 8 x 10',
+        'Calcaneo Axial - LAT # 1 - 8 x 10',
+        'Clavicula - Hombro - Escapula # 1 - 8 x 10',
+        'Codo AP- LAT # 1 - 8 x 10',
+        'Muñeca AP- LAT # 1 - 8 x 30',
+        'Cráneo Simple - con ventana ósea',
+        'Cráneo con contraste',
+        'Silla turca – Hipófisis sin contraste',
+        'Silla turca – Hipófisis con contraste',
+        'Oídos – peñascos sin contraste',
+        'Oídos – peñascos con contraste',
+        'Orbitas sin contraste',
+        'Orbitas con contraste',
+        'Senos paranasales sin contraste',
+        'Senos paranasales con contraste',
+        'Macizo Facial sin contraste',
+        'Macizo Facial con contraste',
+        'Cuello sin contraste',
+        'Cuello con contraste',
+        'Tórax sin contraste',
+        'Tórax con contraste',
+        'Abdomen y pelvis sin contraste',
+        'Abdomen y pelvis con contraste',
+        'Pelvis sin contraste',
+        'Pelvis con contraste',
+        'Columna cervical',
+        'Columna Dorsal',
+        'Columna Lumbar',
+        'Columna Sacro-coxis',
+        'Columna total Sin contraste',
+        'Columna total con contraste técnica Raquídea',
+        'Hombro-codo-muñeca-mano-rodilla-tobillo-pie + 3D',
+        'Pierna-fémur-antebrazo-humero + 3D',
+        'Patelo femoral 15°- 30°- 45° - 60°- 90° (Rotulas)',
+        'PIELOTAC sin contraste (Abdomen simple)',
+        'Perfusión Cerebral por tomografía',
+        'Angiotomografía de cerebro (polígono de Willis o cuatro vasos)',
+        'Angiotomografía de carótidas',
+        'Angiotomografía de Arterias pulmonares (ANGIO TEP)',
+        'Angio (UROTAC)',
+        'Angiotomografía de arteria Aorta',
+        'Angiotomografía de miembro inferior Total (ANGIO MMII)',
+        'Angiotomografía de miembro superior Total (ANGIO MMss)',
+        'PIELOTAC sin contraste ( Abdomen simple)',
+        'Perfucion Cerebral por tomografia',
+        'RX Histerosalpingografia',
+        'rayos x de craneo',
+        'UROGRAMA EXCRETOR'
+      ],
+      medicineFilter: '',
+      medicineColumns: [
+        { name: 'options', label: 'Opciones', field: 'options', sortable: true },
+        // { name: 'id', label: 'ID', field: 'id', align: 'left', sortable: true },
+        { name: 'name', label: 'Medicamento', field: 'name', align: 'left', sortable: true }
+      ],
       summaries: [
         'ACCIDENTE DE TRABAJO',
         'ACCIDENTE DE TRANSITO',
@@ -386,9 +797,9 @@ export default {
       history: {},
       histories: [],
       historyColumns: [
-        { name: 'options', label: 'Opciones', field: 'options', sortable: true },
+        { name: 'options', label: 'Opciones', field: 'options' },
         { name: 'date', label: 'Fecha', field: 'date', sortable: true },
-        { name: 'doctor', label: 'doctor', field: 'doctor', sortable: true },
+        { name: 'doctor', label: 'doctor', field: (row) => row.user.name, sortable: true },
         { name: 'summary', label: 'Resumen medico', field: 'summary', sortable: true },
         { name: 'action', label: 'Medida de accion', field: 'action', sortable: true }
       ],
@@ -402,7 +813,8 @@ export default {
       numbers: [],
       units: [],
       times: [],
-      vias: []
+      vias: [],
+      medicineCreate: false
     }
   },
   created () {
@@ -453,19 +865,120 @@ export default {
     this.patientGet()
   },
   methods: {
+    editPrescription (prescription) {
+      this.medicine = prescription
+      this.medicineDialog = true
+      this.medicineCreate = false
+    },
+    deletePrescription (index) {
+      this.$q.dialog({
+        title: 'Eliminar',
+        message: '¿Estas seguro de eliminar esta prescripcion?',
+        cancel: true,
+        persistent: true
+      }).onOk(() => {
+        this.queryMedicines.splice(index, 1)
+      }).onCancel(() => {
+        console.log('Cancel')
+      }).onDismiss(() => {
+        console.log('Dismiss')
+      })
+    },
+    editMedicine (row, index) {
+      this.$q.dialog({
+        title: 'Editar medicamento',
+        message: '¿Desea editar el medicamento?',
+        prompt: {
+          model: row.name,
+          type: 'text'
+        },
+        cancel: true
+      }).onOk((data) => {
+        this.medicines[index].name = data
+        this.$api.put('medicines/' + row.id, {
+          name: data
+        }).then(response => {
+          this.$q.notify({
+            message: 'Medicamento editado',
+            color: 'positive',
+            icon: 'check_circle'
+          })
+        }).catch(error => {
+          this.$q.notify({
+            message: error.response.data.message,
+            color: 'negative',
+            icon: 'error'
+          })
+        })
+      }).onCancel(() => {
+        console.log('Cancel')
+      }).onDismiss(() => {
+        console.log('Dismissed')
+      })
+    },
+    deleteMedicine (row, index) {
+      this.$q.dialog({
+        title: 'Eliminar',
+        message: '¿Estas seguro de eliminar este medicamento?',
+        cancel: true,
+        persistent: true
+      }).onOk(() => {
+        this.medicines.splice(index, 1)
+        this.$api.delete('medicines/' + row.id)
+      }).onCancel(() => {
+        console.log('Cancel')
+      }).onDismiss(() => {
+        console.log('Dismissed')
+      })
+    },
+    addMedicine () {
+      this.$q.dialog({
+        title: 'Agregar medicamento',
+        message: 'Ingrese el nombre del medicamento',
+        prompt: {
+          model: '',
+          type: 'text'
+        },
+        cancel: true,
+        persistent: true
+      }).onOk(data => {
+        this.medicines.push({ id: this.medicines.length + 1, name: data })
+        this.$api.post('medicines', { name: data }).then(response => {
+          this.$q.notify({
+            message: 'Medicamento agregado',
+            color: 'positive',
+            icon: 'check_circle'
+          })
+        })
+      }).onCancel(() => {
+        console.log('Cancel')
+      }).onDismiss(() => {
+        console.log('Dismissed')
+      })
+    },
     addMedicines () {
-      this.queryMedicines.push(this.medicine)
-      this.medicine = {}
-      this.medicineDialog = false
+      if (this.medicineCreate) {
+        this.medicine.id = this.queryMedicines.length + 1
+        this.queryMedicines.push(this.medicine)
+        this.medicine = {}
+        this.medicineDialog = false
+      } else {
+        const find = this.queryMedicines.find(medicine => medicine.id === this.medicine.id)
+        this.queryMedicines[this.queryMedicines.indexOf(find)] = this.medicine
+        this.medicineDialog = false
+      }
     },
     addPrescription () {
       this.medicineDialog = true
+      this.medicine = {}
+      this.medicineCreate = true
     },
     medicinesGet () {
       this.$api.get('medicines').then(res => {
-        this.medicines = res.data.map(medicine => {
-          return medicine.name
-        })
+        this.medicines = res.data
+        // res.data.forEach(medicine => {
+        //   this.medicines.push(medicine.name)
+        // })
       })
     },
     numbersGet () {
@@ -500,6 +1013,20 @@ export default {
       this.history = history
       this.historyCreate = false
       this.historyShow = true
+      this.queryMedicines = []
+      if (history.tomografias) {
+        this.history.tomografias = history.tomografias.split(',')
+      }
+      if (history.radiografias) {
+        this.history.radiografias = history.radiografias.split(',')
+      }
+      if (history.laboratorios) {
+        this.history.laboratorios = history.laboratorios.split(',')
+      }
+      this.history.query_medicines.forEach(item => {
+        item.name = item.medicine
+        this.queryMedicines.push(item)
+      })
     },
     deleteHistory (history) {
       this.$q.dialog({
@@ -525,6 +1052,8 @@ export default {
               color: 'negative',
               icon: 'error'
             })
+          }).finally(() => {
+            this.loading = false
           })
       })
     },
@@ -600,6 +1129,7 @@ export default {
         this.history.hospital_id = this.store.user.hospital_id
         this.history.patient_id = this.id
         this.history.user_id = this.store.user.id
+        this.history.medicines = this.queryMedicines
         this.$api.post('queries', this.history).then(response => {
           this.historyShow = false
           this.historyGet()
@@ -608,8 +1138,17 @@ export default {
             color: 'positive',
             icon: 'check_circle'
           })
+        }).catch(error => {
+          this.$q.notify({
+            message: error.response.data.message,
+            color: 'negative',
+            icon: 'error'
+          })
+        }).finally(() => {
+          this.loading = false
         })
       } else {
+        this.history.medicines = this.queryMedicines
         this.$api.put('queries/' + this.history.id, this.history).then(response => {
           this.historyShow = false
           this.historyGet()
@@ -618,6 +1157,14 @@ export default {
             color: 'positive',
             icon: 'check_circle'
           })
+        }).catch(error => {
+          this.$q.notify({
+            message: error.response.data.message,
+            color: 'negative',
+            icon: 'error'
+          })
+        }).finally(() => {
+          this.loading = false
         })
       }
     },

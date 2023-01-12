@@ -15,14 +15,15 @@ return new class extends Migration
     {
         Schema::create('query_medicines', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('query_id')->constrained();
-            $table->string('medicine');
-            $table->string('amount');
-            $table->string('note');
-            $table->string("number");
-            $table->string("unit");
-            $table->string("time");
-            $table->string("via");
+            $table->foreignId('query_id')->constrained()->onDelete('cascade');
+            $table->string('medicine')->nullable();
+            $table->string('amount')->nullable();
+            $table->string('note')->nullable();
+            $table->string("number")->nullable();
+            $table->string("unit")->nullable();
+            $table->string("time")->nullable();
+            $table->string("via")->nullable();
+            $table->string("diagnosis")->nullable();
             $table->timestamps();
         });
     }

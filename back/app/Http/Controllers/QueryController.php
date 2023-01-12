@@ -6,6 +6,7 @@ use App\Http\Controllers\PDF\PdfController;
 use App\Models\Query;
 use App\Http\Requests\StoreQueryRequest;
 use App\Http\Requests\UpdateQueryRequest;
+use App\Models\QueryMedicine;
 use App\Models\User;
 use DateTime;
 use Illuminate\Http\Request;
@@ -19,18 +20,72 @@ class QueryController extends Controller{
     public function store(Request $request){
         $request['date'] = date('Y-m-d');
         $request['time'] = date('H:i:s');
-        return Query::create($request->all());
+        if (($request['ecografias'])!=null) {
+            $request['ecografias'] = implode(',', $request['ecografias']);
+        }
+        if (($request['tomografias'])!=null) {
+            $request['tomografias'] = implode(',', $request['tomografias']);
+        }
+        if (($request['laboratorios'])!=null) {
+            $request['laboratorios'] = implode(',', $request['laboratorios']);
+        }
+
+        $query= Query::create($request->all());
+        foreach ($request->medicines as $key => $value) {
+            $queryMedicine = new QueryMedicine();
+            $queryMedicine->query_id = $query->id;
+            $queryMedicine->medicine = isset($value['name']) ? $value['name'] : null;
+            $queryMedicine->amount = isset($value['amount']) ? $value['amount'] : null;
+            $queryMedicine->note = isset($value['note']) ? $value['note'] : null;
+            $queryMedicine->number = isset($value['number']) ? $value['number'] : null;
+            $queryMedicine->unit = isset($value['unit']) ? $value['unit'] : null;
+            $queryMedicine->time = isset($value['time']) ? $value['time'] : null;
+            $queryMedicine->via = isset($value['via']) ? $value['via'] : null;
+            $queryMedicine->diagnosis = isset($value['diagnosis']) ? $value['diagnosis'] : null;
+            $queryMedicine->save();
+        }
+        return $query;
     }
     public function show($patient_id){
-        return DB::table('queries')
-            ->join('users', 'queries.user_id', '=', 'users.id')
-            ->select('queries.*', 'users.name as doctor')
-            ->where('queries.patient_id', $patient_id)
-            ->orderBy('queries.date', 'desc')
-            ->orderBy('queries.time', 'desc')
+//        return DB::table('queries')
+//            ->join('users', 'queries.user_id', '=', 'users.id')
+//            ->select('queries.*', 'users.name as doctor')
+//            ->where('queries.patient_id', $patient_id)
+//            ->orderBy('queries.id', 'desc')
+//            ->get();
+        $queries = Query::where('patient_id', $patient_id)
+            ->with('user')
+            ->with('queryMedicines')
+            ->orderBy('id', 'desc')
             ->get();
+        return $queries;
     }
-    public function update(Request $request, Query $query){return $query->update($request->all());}
+    public function update(Request $request, Query $query){
+        QueryMedicine::where('query_id', $query->id)->delete();
+        if (($request['ecografias'])!=null) {
+            $request['ecografias'] = implode(',', $request['ecografias']);
+        }
+        if (($request['tomografias'])!=null) {
+            $request['tomografias'] = implode(',', $request['tomografias']);
+        }
+        if (($request['laboratorios'])!=null) {
+            $request['laboratorios'] = implode(',', $request['laboratorios']);
+        }
+        foreach ($request->medicines as $key => $value) {
+            $queryMedicine = new QueryMedicine();
+            $queryMedicine->query_id = $query->id;
+            $queryMedicine->medicine = isset($value['name']) ? $value['name'] : null;
+            $queryMedicine->amount = isset($value['amount']) ? $value['amount'] : null;
+            $queryMedicine->note = isset($value['note']) ? $value['note'] : null;
+            $queryMedicine->number = isset($value['number']) ? $value['number'] : null;
+            $queryMedicine->unit = isset($value['unit']) ? $value['unit'] : null;
+            $queryMedicine->time = isset($value['time']) ? $value['time'] : null;
+            $queryMedicine->via = isset($value['via']) ? $value['via'] : null;
+            $queryMedicine->diagnosis = isset($value['diagnosis']) ? $value['diagnosis'] : null;
+            $queryMedicine->save();
+        }
+        return $query->update($request->all());
+    }
     public function destroy(Query $query){$query->delete();return $query;}
     public function reportHistory($id){
         $pdf = App::make('dompdf.wrapper');
