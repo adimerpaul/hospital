@@ -91,7 +91,7 @@ class QueryController extends Controller{
         $pdf = App::make('dompdf.wrapper');
         $pdfController=new PdfController();
         $html=$pdfController->history($id);
-        return $pdfController->history($id);
+//        return $pdfController->history($id);
         $pdf->loadHTML($html);
         return $pdf->stream();
     }

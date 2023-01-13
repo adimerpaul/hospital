@@ -20,7 +20,7 @@ class PdfController
                     </td>
                 </tr>';
         }
-        return $query;
+//        return $query;
         $url = env('URL_BACK')."reportHistory/".$id;
         $qrcode = base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($url));
         $content='<tr>
@@ -457,6 +457,9 @@ class PdfController
     }
     public function formatDate($date)
     {
+        if ($date == null || $date == '' || $date == '0000-00-00') {
+            return '';
+        }
         $date = explode('-', $date);
         return $date[2] . '/' . $date[1] . '/' . $date[0];
     }
