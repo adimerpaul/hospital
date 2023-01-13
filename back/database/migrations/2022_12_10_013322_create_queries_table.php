@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('blood')->nullable();
 
             $table->string('pregnant')->nullable();
-            $table->string('FUM')->nullable();
+            $table->date('FUM')->nullable();
             $table->string('SDG')->nullable();
             $table->string('FU')->nullable();
 

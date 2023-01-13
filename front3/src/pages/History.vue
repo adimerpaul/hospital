@@ -1125,6 +1125,9 @@ export default {
     },
     historySubmit () {
       this.loading = true
+      this.history.FUM = this.history.fum
+      this.history.SDG = this.history.calculateGestation
+      this.history.FU = this.history.fu
       if (this.historyCreate) {
         this.history.hospital_id = this.store.user.hospital_id
         this.history.patient_id = this.id
