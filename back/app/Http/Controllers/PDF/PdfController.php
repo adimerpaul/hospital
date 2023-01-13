@@ -20,7 +20,7 @@ class PdfController
                     </td>
                 </tr>';
         }
-//        return $query;
+        return $query;
 
         $url = env('URL_BACK')."reportHistory/".$id;
         $qrcode = base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($url));
