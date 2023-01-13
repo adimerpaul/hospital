@@ -12,7 +12,7 @@ class PdfController
         $query=Query::where('id', $id)->with(['user', 'patient','hospital'])->first();
         $queries=Query::where('patient_id', $query->patient_id)->get();
         $queryMedicinesText='';
-        $queryMedicines=$query->queryMedicines;
+        $queryMedicines=$query->queryMedicines->birthday;
         foreach ($queryMedicines as $queryMedicine){
             $queryMedicinesText.='<tr>
                     <td colspan="4">
