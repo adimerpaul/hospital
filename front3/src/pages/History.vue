@@ -1014,6 +1014,9 @@ export default {
       this.historyCreate = false
       this.historyShow = true
       this.queryMedicines = []
+      this.history.fum = this.history.FUM
+      this.history.sdg = this.history.SDG
+      this.history.fu = this.history.FU
       if (history.tomografias) {
         this.history.tomografias = history.tomografias.split(',')
       }
