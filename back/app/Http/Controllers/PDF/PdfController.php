@@ -12,7 +12,7 @@ class PdfController
         $query=Query::where('id', $id)->with(['user', 'patient','hospital'])->first();
         $queries=Query::where('patient_id', $query->patient_id)->get();
         $queryMedicinesText='';
-        $queryMedicines=$query->queryMedicines['birthday'];
+        $queryMedicines=$query->queryMedicines;
         foreach ($queryMedicines as $queryMedicine){
             $queryMedicinesText.='<tr>
                     <td colspan="4">
@@ -20,7 +20,7 @@ class PdfController
                     </td>
                 </tr>';
         }
-        return $query->patient;
+        return $query->patient->birthday;
 
         $url = env('URL_BACK')."reportHistory/".$id;
         $qrcode = base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($url));
