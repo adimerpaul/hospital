@@ -20,7 +20,6 @@ class PdfController
                     </td>
                 </tr>';
         }
-        $birthday = $this->formatDate($query->patient->birthday);
 
         $url = env('URL_BACK')."reportHistory/".$id;
         $qrcode = base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($url));
@@ -53,7 +52,7 @@ class PdfController
                         <div class="bold text-right">FECHA NACIMIENTO:</div>
                     </td>
                     <td>
-                        <div>'.$birthday.'</div>
+                        <div>'.$this->formatDate($query->patient->birthday).'</div>
                     </td>
                 </tr>
                 <tr>
