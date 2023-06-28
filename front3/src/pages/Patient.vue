@@ -16,29 +16,40 @@
   </q-td>
 </template>
   <template v-slot:body-cell-options="props">
-    <q-td :props="props">
-      <q-btn-dropdown label="Opciones" color="primary" no-caps >
-        <q-list>
-          <q-item clickable @click="patientEditClick(props.row)">
-            <q-item-section avatar>
-              <q-icon name="o_edit" />
-            </q-item-section>
-            <q-item-section>Editar</q-item-section>
-          </q-item>
-          <q-item clickable @click="patientDeleteClick(props.row)">
-            <q-item-section avatar>
-              <q-icon name="o_delete" />
-            </q-item-section>
-            <q-item-section>Eliminar</q-item-section>
-          </q-item>
-          <q-item clickable :to="`history/${props.row.id}`">
-            <q-item-section avatar>
-              <q-icon name="o_history" />
-            </q-item-section>
-            <q-item-section>Historial Clinico</q-item-section>
-          </q-item>
-        </q-list>
-      </q-btn-dropdown>
+    <q-td :props="props" auto-width>
+      <q-btn-group>
+        <q-btn dense icon="o_edit" @click="patientEditClick(props.row)" color="primary" >
+          <q-tooltip>Editar</q-tooltip>
+        </q-btn>
+        <q-btn dense icon="o_delete" @click="patientDeleteClick(props.row)" color="negative" >
+          <q-tooltip>Eliminar</q-tooltip>
+        </q-btn>
+        <q-btn dense icon="o_history" :to="`history/${props.row.id}`" no-caps color="cyan" >
+          <q-tooltip>Historial Clinico</q-tooltip>
+        </q-btn>
+      </q-btn-group>
+<!--      <q-btn-dropdown label="Opciones" color="primary" no-caps >-->
+<!--        <q-list>-->
+<!--          <q-item clickable @click="patientEditClick(props.row)">-->
+<!--            <q-item-section avatar>-->
+<!--              <q-icon name="o_edit" />-->
+<!--            </q-item-section>-->
+<!--            <q-item-section>Editar</q-item-section>-->
+<!--          </q-item>-->
+<!--          <q-item clickable @click="patientDeleteClick(props.row)">-->
+<!--            <q-item-section avatar>-->
+<!--              <q-icon name="o_delete" />-->
+<!--            </q-item-section>-->
+<!--            <q-item-section>Eliminar</q-item-section>-->
+<!--          </q-item>-->
+<!--          <q-item clickable :to="`history/${props.row.id}`">-->
+<!--            <q-item-section avatar>-->
+<!--              <q-icon name="o_history" />-->
+<!--            </q-item-section>-->
+<!--            <q-item-section>Historial Clinico</q-item-section>-->
+<!--          </q-item>-->
+<!--        </q-list>-->
+<!--      </q-btn-dropdown>-->
     </q-td>
   </template>
 </q-table>

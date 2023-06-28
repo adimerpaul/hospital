@@ -27,9 +27,9 @@
                     <div class="col-12 q-pt-xs">
                       <q-btn size="22px" :loading="loading" class="full-width bold" color="primary" label="Iniciar Sesión" type="submit" no-caps />
                     </div>
-                    <div class="col-12 q-pt-xs">
-                      <q-btn to="/signup" size="22px" outline class="full-width bold" color="primary" label="Registrate" type="submit" no-caps />
-                    </div>
+<!--                    <div class="col-12 q-pt-xs">-->
+<!--                      <q-btn to="/signup" size="22px" outline class="full-width bold" color="primary" label="Registrate" type="submit" no-caps />-->
+<!--                    </div>-->
                     <div class="col-12 text-center q-py-none">
                       <a href="" class="text-blue-8 ">¿Olvidaste tu contraseña?</a>
                     </div>

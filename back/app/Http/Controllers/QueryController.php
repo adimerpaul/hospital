@@ -16,7 +16,9 @@ use Luecano\NumeroALetras\NumeroALetras;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class QueryController extends Controller{
-    public function index(Request $request){return Query::where('hospital_id', $request->user()->hospital_id)->get();}
+    public function index(Request $request){
+        return Query::where('hospital_id', $request->user()->hospital_id)->with('patient')->get();
+    }
     public function store(Request $request){
         $request['date'] = date('Y-m-d');
         $request['time'] = date('H:i:s');
@@ -55,6 +57,7 @@ class QueryController extends Controller{
 //            ->get();
         $queries = Query::where('patient_id', $patient_id)
             ->with('user')
+            ->with('patient')
             ->with('queryMedicines')
             ->orderBy('id', 'desc')
             ->get();

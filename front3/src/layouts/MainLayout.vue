@@ -37,15 +37,15 @@
     >
       <q-scroll-area style="height: calc(100% - 130px); margin-top: 130px; border-right: 1px solid #ddd">
         <q-list padding>
-          <q-item clickable v-ripple to="/" active-class="bg-blue-6 text-white" exact>
+          <q-item clickable v-ripple to="/" active-class="bg-cyan-6 text-white" exact>
             <q-item-section avatar>
               <q-icon name="o_home" />
             </q-item-section>
             <q-item-section>
-              PRINCIPAL
+              Principal
             </q-item-section>
           </q-item>
-<!--          <q-item clickable v-ripple to="/schedule" active-class="bg-blue-6 text-white" exact>-->
+<!--          <q-item clickable v-ripple to="/schedule" active-class="bg-cyan-6 text-white" exact>-->
 <!--            <q-item-section avatar>-->
 <!--              <q-icon name="o_schedule" />-->
 <!--            </q-item-section>-->
@@ -53,53 +53,53 @@
 <!--              Horarios-->
 <!--            </q-item-section>-->
 <!--          </q-item>-->
-          <q-item clickable v-ripple to="/patient" active-class="bg-blue-6 text-white" exact>
+          <q-item clickable v-ripple to="/patient" active-class="bg-cyan-6 text-white" exact>
             <q-item-section avatar>
               <q-icon name="o_people" />
             </q-item-section>
             <q-item-section>
-              PACIENTES
+              Pacientes
             </q-item-section>
           </q-item>
-          <q-item clickable v-ripple to="/reservations" active-class="bg-blue-6 text-white" exact>
+          <q-item clickable v-ripple to="/reservations" active-class="bg-cyan-6 text-white" exact>
             <q-item-section avatar>
               <q-icon name="o_event_note" />
             </q-item-section>
             <q-item-section>
-              RESERVAS
+              Reservas
             </q-item-section>
           </q-item>
-          <q-item clickable v-ripple to="/sale" active-class="bg-blue-6 text-white" exact>
-            <q-item-section avatar>
-              <q-icon name="o_shopping_cart" />
-            </q-item-section>
-            <q-item-section>
-              VENTAS
-            </q-item-section>
-          </q-item>
-          <q-item clickable v-ripple to="/category" active-class="bg-blue-6 text-white" exact>
-            <q-item-section avatar>
-              <q-icon name="o_category" />
-            </q-item-section>
-            <q-item-section>
-              CATEGORIAS
-            </q-item-section>
-          </q-item>
-          <q-item clickable v-ripple to="/product" active-class="bg-blue-6 text-white" exact>
-            <q-item-section avatar>
-              <q-icon name="o_inventory_2" />
-            </q-item-section>
-            <q-item-section>
-              PRODUCTOS
-            </q-item-section>
-          </q-item>
+<!--          <q-item clickable v-ripple to="/sale" active-class="bg-cyan-6 text-white" exact>-->
+<!--            <q-item-section avatar>-->
+<!--              <q-icon name="o_shopping_cart" />-->
+<!--            </q-item-section>-->
+<!--            <q-item-section>-->
+<!--              VENTAS-->
+<!--            </q-item-section>-->
+<!--          </q-item>-->
+<!--          <q-item clickable v-ripple to="/category" active-class="bg-cyan-6 text-white" exact>-->
+<!--            <q-item-section avatar>-->
+<!--              <q-icon name="o_category" />-->
+<!--            </q-item-section>-->
+<!--            <q-item-section>-->
+<!--              CATEGORIAS-->
+<!--            </q-item-section>-->
+<!--          </q-item>-->
+<!--          <q-item clickable v-ripple to="/product" active-class="bg-cyan-6 text-white" exact>-->
+<!--            <q-item-section avatar>-->
+<!--              <q-icon name="o_inventory_2" />-->
+<!--            </q-item-section>-->
+<!--            <q-item-section>-->
+<!--              PRODUCTOS-->
+<!--            </q-item-section>-->
+<!--          </q-item>-->
         </q-list>
       </q-scroll-area>
       <q-img class="absolute-top" src="fondo.jpg" style="height: 130px">
         <div class="absolute-bottom bg-transparent">
-          <q-avatar size="56px" class="q-mb-sm">
-            <img :src="`${url}../imagenes/${store.user.avatar}`" v-if="store.user.avatar!=undefined">
-          </q-avatar>
+<!--          <q-avatar size="56px" class="q-mb-sm">-->
+<!--            <img :src="`${url}../imagenes/${store.user.avatar}`" v-if="store.user.avatar!=undefined">-->
+<!--          </q-avatar>-->
           <div class="text-weight-bold" v-if="store.user.avatar!=undefined">{{ store.user.name.toLowerCase() }}</div>
           <div>{{ store.user.email }}</div>
         </div>

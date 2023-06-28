@@ -39,13 +39,14 @@
             </template>
             <template v-slot:body-cell-options="props">
               <q-td :props="props" auto-width>
+                <span class="text-bold q-pa-xs">{{histories.length-props.pageIndex}}</span>
                 <q-btn-dropdown label="Opciones" dense color="primary" no-caps>
                   <q-list>
                     <q-item clickable v-close-popup @click="editHistory(props.row)">
                       <q-item-section avatar>
                         <q-icon name="o_edit" color="grey-8" />
                       </q-item-section>
-                      <q-item-section>Editar</q-item-section>
+                      <q-item-section>Editar o ver</q-item-section>
                     </q-item>
                     <q-item clickable v-close-popup @click="deleteHistory(props.row)">
                       <q-item-section avatar>
@@ -55,7 +56,7 @@
                     </q-item>
                     <q-item clickable v-close-popup :href="`${url}reportHistory/${props.row.id}`" target="_blank">
                       <q-item-section avatar>
-                        <q-icon name="o_visibility" color="grey-8" />
+                        <q-icon name="o_print" color="grey-8" />
                       </q-item-section>
                       <q-item-section>Ver Historial clinico</q-item-section>
                     </q-item>
@@ -77,6 +78,12 @@
                       </q-item-section>
                       <q-item-section>Receta medica whatsapp</q-item-section>
                     </q-item>
+                    <q-item clickable v-close-popup @click="printReceta(props.row)">
+                      <q-item-section avatar>
+                        <q-icon name="o_print" color="grey-8" />
+                      </q-item-section>
+                      <q-item-section>Imprimir receta</q-item-section>
+                    </q-item>
                   </q-list>
                 </q-btn-dropdown>
               </q-td>
@@ -86,7 +93,7 @@
       </div>
     </div>
   </div>
-  <q-dialog v-model="historyShow" full-width full-height>
+  <q-dialog v-model="historyShow" full-width>
     <q-card class="q-pa-md" >
       <q-card-section class="row items-center q-py-none bg-primary">
         <div class="text-center text-h5 text-bold text-white">Consulta Medica <span v-if="!historyCreate">{{formatDate(history.date)}} {{formatTime(history.time)}}</span></div>
@@ -95,48 +102,48 @@
       </q-card-section>
       <q-card-section class="items-center q-pa-none" >
         <div class="row">
-          <div class="col-2 col-md-2 ">
-            <div class="row bg-primary">
-              <div class="col-12">
-                <q-btn @click="aniateScroll(0,'weight')" label="Signos vitales" no-caps align="left" class="full-width bg-primary text-white" icon="favorite_outline" flat  />
-              </div>
-              <div class="col-12">
-                <q-btn @click="aniateScroll(110,'fum')" label="Preguntas ginecologias" no-caps align="left" class="full-width bg-primary text-white" icon="help_outline" flat  />
-              </div>
-              <div class="col-12">
-                <q-btn @click="aniateScroll(180,'smokerDescription')" label="Preguntas generales" no-caps align="left" class="full-width bg-primary text-white" icon="question_mark" flat  />
-              </div>
-              <div class="col-12">
-                <q-btn @click="aniateScroll(300,'note')" label="Notas medicas" no-caps align="left" class="full-width bg-primary text-white" icon="o_note" flat  />
-              </div>
-              <div class="col-12">
-                <q-btn @click="aniateScroll(500,'exploration')" label="Exploracion fisica" no-caps align="left" class="full-width bg-primary text-white" icon="speed" flat  />
-              </div>
+<!--          <div class="col-2 col-md-2 ">-->
+<!--            <div class="row bg-primary">-->
 <!--              <div class="col-12">-->
-<!--                <q-btn @click="aniateScroll(0,'')" label="Diagnostico importante" no-caps align="left" class="full-width bg-primary text-white" icon="bubble_chart" flat  />-->
+<!--                <q-btn @click="aniateScroll(0,'weight')" label="Signos vitales" no-caps align="left" class="full-width bg-primary text-white" icon="favorite_outline" flat  />-->
 <!--              </div>-->
-              <div class="col-12">
-                <q-btn @click="aniateScroll(550,'prescription1')" label="Receta medica" no-caps align="left" class="full-width bg-primary text-white" icon="o_description" flat  />
-              </div>
-              <div class="col-12">
-                <q-btn @click="aniateScroll(1000,'observations')" label="Observaciones" no-caps align="left" class="full-width bg-primary text-white" icon="o_contact_support" flat  />
-              </div>
-              <div class="col-12">
-                <q-btn @click="aniateScroll(1000,'summary')" label="Infomacion Laboral" no-caps align="left" class="full-width bg-primary text-white" icon="work_outline" flat  />
-              </div>
 <!--              <div class="col-12">-->
-<!--                <q-btn @click="aniateScroll(0,'')" label="Medicamento" no-caps align="left" class="full-width bg-primary text-white" icon="o_vaccines" flat  />-->
+<!--                <q-btn @click="aniateScroll(110,'fum')" label="Preguntas ginecologias" no-caps align="left" class="full-width bg-primary text-white" icon="help_outline" flat  />-->
 <!--              </div>-->
-              <div class="col-12 bg-white q-py-xs">
-                <q-btn :loading="loading" @click="historySubmit" :label="historyCreate?`Registrar`:`Modificar`" no-caps :class="`full-width ${historyCreate?`bg-green text-white`:`bg-yellow`} `" :icon="historyCreate?`check_circle_outline`:`edit`" flat  />
-                <q-btn v-if="!historyCreate" :loading="loading" @click="deleteHistory(history)" :label="`Eliminar`" no-caps :class="`full-width bg-red text-white`" :icon="`o_delete`" flat  />
-              </div>
-            </div>
-          </div>
-          <div class="col-10 col-md-10 q-pa-xs" style="height: 80vh">
+<!--              <div class="col-12">-->
+<!--                <q-btn @click="aniateScroll(180,'smokerDescription')" label="Preguntas generales" no-caps align="left" class="full-width bg-primary text-white" icon="question_mark" flat  />-->
+<!--              </div>-->
+<!--              <div class="col-12">-->
+<!--                <q-btn @click="aniateScroll(300,'note')" label="Notas medicas" no-caps align="left" class="full-width bg-primary text-white" icon="o_note" flat  />-->
+<!--              </div>-->
+<!--              <div class="col-12">-->
+<!--                <q-btn @click="aniateScroll(500,'exploration')" label="Exploracion fisica" no-caps align="left" class="full-width bg-primary text-white" icon="speed" flat  />-->
+<!--              </div>-->
+<!--&lt;!&ndash;              <div class="col-12">&ndash;&gt;-->
+<!--&lt;!&ndash;                <q-btn @click="aniateScroll(0,'')" label="Diagnostico importante" no-caps align="left" class="full-width bg-primary text-white" icon="bubble_chart" flat  />&ndash;&gt;-->
+<!--&lt;!&ndash;              </div>&ndash;&gt;-->
+<!--              <div class="col-12">-->
+<!--                <q-btn @click="aniateScroll(550,'prescription1')" label="Receta medica" no-caps align="left" class="full-width bg-primary text-white" icon="o_description" flat  />-->
+<!--              </div>-->
+<!--              <div class="col-12">-->
+<!--                <q-btn @click="aniateScroll(1000,'observations')" label="Observaciones" no-caps align="left" class="full-width bg-primary text-white" icon="o_contact_support" flat  />-->
+<!--              </div>-->
+<!--              <div class="col-12">-->
+<!--                <q-btn @click="aniateScroll(1000,'summary')" label="Infomacion Laboral" no-caps align="left" class="full-width bg-primary text-white" icon="work_outline" flat  />-->
+<!--              </div>-->
+<!--&lt;!&ndash;              <div class="col-12">&ndash;&gt;-->
+<!--&lt;!&ndash;                <q-btn @click="aniateScroll(0,'')" label="Medicamento" no-caps align="left" class="full-width bg-primary text-white" icon="o_vaccines" flat  />&ndash;&gt;-->
+<!--&lt;!&ndash;              </div>&ndash;&gt;-->
+<!--              <div class="col-12 bg-white q-py-xs">-->
+<!--                <q-btn :loading="loading" @click="historySubmit" :label="historyCreate?`Registrar`:`Modificar`" no-caps :class="`full-width ${historyCreate?`bg-green text-white`:`bg-yellow`} `" :icon="historyCreate?`check_circle_outline`:`edit`" flat  />-->
+<!--                <q-btn v-if="!historyCreate" :loading="loading" @click="deleteHistory(history)" :label="`Eliminar`" no-caps :class="`full-width bg-red text-white`" :icon="`o_delete`" flat  />-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+          <div class="col-12 col-md-12 q-pa-xs">
 <!--            <q-scroll-area class="full-width full-height">-->
 <!--              <div v-for="n in 100" :key="n" class="q-py-xs">-->
-            <q-scroll-area class="full-width full-height" ref="scrollAreaRef">
+<!--            <q-scroll-area class="full-width full-height" ref="scrollAreaRef">-->
               <div class="row">
                 <div class="col-12 bg-primary q-pa-xs text-white"> <q-icon name="favorite_outline" /> Signos vitales</div>
                 <div class="col-12">
@@ -173,43 +180,51 @@
 <!--                    </div>-->
                   </div>
                 </div>
-                <div class="col-12 bg-primary q-pa-xs text-white"> <q-icon name="help_outline" /> Preguntas ginecologicas</div>
                 <div class="col-12">
                   <div class="row">
-                    <div class="col-6 col-md-2">
-                      <div> ¿Esta embarazada? </div>
-                      <q-radio dense v-model="history.pregnant" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="SI" label="SI" />
-                      <q-radio dense v-model="history.pregnant" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="NO" label="NO" />
+                    <div class="col-6">
+                      <div class="col-12 bg-primary q-pa-xs text-white"> <q-icon name="help_outline" /> Preguntas ginecologicas</div>
+                      <div class="col-12">
+                        <div class="row">
+                          <div class="col-12">
+                            <div> ¿Esta embarazada? </div>
+                            <q-radio dense v-model="history.pregnant" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="SI" label="SI" />
+                            <q-radio dense v-model="history.pregnant" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="NO" label="NO" />
+                          </div>
+                          <div class="col-12" v-if="history.pregnant=='SI'">
+                            <q-input dense outlined  v-model="history.fum" ref="fum" label="Fecha de ultima menstruacion" type="date" />
+                          </div>
+                          <div class="col-12" v-if="history.pregnant=='SI'">
+                            <q-input dense outlined readonly  v-model="calculateGestation" label="Semanas de gestacion" />
+                          </div>
+                          <div class="col-12" v-if="history.pregnant=='SI'">
+                            <q-input dense outlined v-model="history.fu" label="Fondo uterino" />
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div class="col-6 col-md-2" v-if="history.pregnant=='SI'">
-                      <q-input dense outlined  v-model="history.fum" ref="fum" label="Fecha de ultima menstruacion" type="date" />
-                    </div>
-                    <div class="col-6 col-md-2" v-if="history.pregnant=='SI'">
-                      <q-input dense outlined readonly  v-model="calculateGestation" label="Semanas de gestacion" />
-                    </div>
-                    <div class="col-6 col-md-2" v-if="history.pregnant=='SI'">
-                      <q-input dense outlined v-model="history.fu" label="Fondo uterino" />
-                    </div>
-                  </div>
-                </div>
-                <div class="col-12 bg-primary q-pa-xs text-white"> <q-icon name="question_mark" /> Preguntas generales</div>
-                <div class="col-12">
-                  <div class="row">
-                    <div class="col-6 col-md-4">
-                      <div> ¿Fuma? </div>
-                      <q-radio dense v-model="history.smoker" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="SI" label="SI" />
-                      <q-radio dense v-model="history.smoker" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="NO" label="NO" />
-                    </div>
-                    <div class="col-6 col-md-8" >
-                      <q-input v-if="history.smoker=='SI'" dense outlined label="Especificaciones de fumador" ref="smokerDescription" v-model="history.smokerDescription" />
-                    </div>
-                    <div class="col-6 col-md-4">
-                      <div> ¿Toma alcohol? </div>
-                      <q-radio dense v-model="history.alcohol" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="SI" label="SI" />
-                      <q-radio dense v-model="history.alcohol" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="NO" label="NO" />
-                    </div>
-                    <div class="col-6 col-md-8" >
-                      <q-input v-if="history.alcohol=='SI'" dense outlined label="Especificaciones de alcohol" v-model="history.alcoholDescription" />
+                    <div class="col-6">
+                      <div class="col-12 bg-primary q-pa-xs text-white"> <q-icon name="question_mark" /> Preguntas generales</div>
+                      <div class="col-12">
+                        <div class="row">
+                          <div class="col-6 col-md-4">
+                            <div> ¿Fuma? </div>
+                            <q-radio dense v-model="history.smoker" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="SI" label="SI" />
+                            <q-radio dense v-model="history.smoker" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="NO" label="NO" />
+                          </div>
+                          <div class="col-6 col-md-8" >
+                            <q-input v-if="history.smoker=='SI'" dense outlined label="Especificaciones de fumador" ref="smokerDescription" v-model="history.smokerDescription" />
+                          </div>
+                          <div class="col-6 col-md-4">
+                            <div> ¿Toma alcohol? </div>
+                            <q-radio dense v-model="history.alcohol" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="SI" label="SI" />
+                            <q-radio dense v-model="history.alcohol" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="NO" label="NO" />
+                          </div>
+                          <div class="col-6 col-md-8" >
+                            <q-input v-if="history.alcohol=='SI'" dense outlined label="Especificaciones de alcohol" v-model="history.alcoholDescription" />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -218,103 +233,135 @@
 <!--                  <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('note')" />-->
                 </div>
                 <div class="col-12">
-                  <q-input dense outlined label="Diagnostico 1" v-model="history.note1" ref="note" >
-                    <template v-slot:append>
-                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('note1')" />
-                    </template>
-                  </q-input>
-                  <q-input dense outlined label="Diagnostico 2" v-model="history.note2" >
-                    <template v-slot:append>
-                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('note2')" />
-                    </template>
-                  </q-input>
-                  <q-input dense outlined label="Diagnostico 3" v-model="history.note3" >
-                    <template v-slot:append>
-                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('note3')" />
-                    </template>
-                  </q-input>
-                  <q-input dense outlined label="Diagnostico 4" v-model="history.note4" >
-                    <template v-slot:append>
-                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('note4')" />
-                    </template>
-                  </q-input>
-                </div>
-                <div class="col-12 bg-primary q-pa-xs text-white"> <q-icon name="speed" />
-                  Exploracion fisica
-                  <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('exploration')" />
+                  <div class="row">
+                    <div class="col-3">
+                      <q-input dense outlined label="Diagnostico 1" v-model="history.note1" ref="note" >
+                        <template v-slot:append>
+                          <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('note1')" />
+                        </template>
+                      </q-input>
+                    </div>
+                    <div class="col-3">
+                      <q-input dense outlined label="Diagnostico 2" v-model="history.note2" >
+                        <template v-slot:append>
+                          <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('note2')" />
+                        </template>
+                      </q-input>
+                    </div>
+                    <div class="col-3">
+                      <q-input dense outlined label="Diagnostico 3" v-model="history.note3" >
+                        <template v-slot:append>
+                          <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('note3')" />
+                        </template>
+                      </q-input>
+                    </div>
+                    <div class="col-3">
+                      <q-input dense outlined label="Diagnostico 4" v-model="history.note4" >
+                        <template v-slot:append>
+                          <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('note4')" />
+                        </template>
+                      </q-input>
+                    </div>
+                  </div>
                 </div>
                 <div class="col-12">
-                  <q-input dense outlined label="Exploracion fisica" v-model="history.exploration" type="textarea" ref="exploration" />
-                </div>
-                <div class="col-12 bg-primary q-pa-xs text-white">
-                  <q-icon name="o_description" />
-                  Receta Medica <q-btn dense flat :loading="loading" icon="add_circle_outline" @click="addPrescription" />
-                </div>
-                <div class="col-12 q-pa-xs">
-                  <template v-for="(m,i) in queryMedicines" :key="i">
-                    <div class="row">
-                      <div class="col-12 text-bold">
-                        <q-btn flat dense rounded icon="o_edit" @click="editPrescription(m)" />
-                        <q-btn flat dense rounded icon="o_delete" @click="deletePrescription(i)" />
-                        {{i+1}}.- {{m.name}} {{m.number}} {{m.unit}} {{m.times}} {{m.via}} {{m.diagnosis}}
+                  <div class="row">
+                    <div class="col-6">
+                      <div class="col-12 bg-primary q-pa-xs text-white"> <q-icon name="speed" />
+                        Exploracion fisica
+                        <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('exploration')" />
+                      </div>
+                      <div class="col-12">
+                        <q-input dense outlined label="Exploracion fisica" v-model="history.exploration" type="textarea" ref="exploration" />
                       </div>
                     </div>
-                  </template>
-<!--                  <pre>{{queryMedicines}}</pre>-->
-<!--                  <q-input dense outlined label="Receta medica 1" ref="prescription1" v-model="history.prescription1">-->
-<!--                    <template v-slot:append>-->
-<!--                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('prescription1')" />-->
-<!--                    </template>-->
-<!--                  </q-input>-->
-<!--                  <q-input dense outlined label="Receta medica 2" v-model="history.prescription2">-->
-<!--                    <template v-slot:append>-->
-<!--                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('prescription2')" />-->
-<!--                    </template>-->
-<!--                  </q-input>-->
-<!--                  <q-input dense outlined label="Receta medica 3" v-model="history.prescription3">-->
-<!--                    <template v-slot:append>-->
-<!--                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('prescription3')" />-->
-<!--                    </template>-->
-<!--                  </q-input>-->
-<!--                  <q-input dense outlined label="Receta medica 4" v-model="history.prescription4">-->
-<!--                    <template v-slot:append>-->
-<!--                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('prescription4')" />-->
-<!--                    </template>-->
-<!--                  </q-input>-->
-<!--                  <q-input dense outlined label="Receta medica 5" v-model="history.prescription5">-->
-<!--                    <template v-slot:append>-->
-<!--                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('prescription5')" />-->
-<!--                    </template>-->
-<!--                  </q-input>-->
-                </div>
-                <div class="col-12 bg-primary q-pa-xs text-white"> <q-icon name="o_contact_support" />
-                  Observaciones
-                  <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('observations')" />
+                    <div class="col-6">
+                      <div class="col-12 bg-primary q-pa-xs text-white">
+                        <q-icon name="o_description" />
+                        Receta Medica <q-btn dense flat :loading="loading" icon="add_circle_outline" @click="addPrescription" />
+                      </div>
+                      <div class="col-12 q-pa-xs">
+                        <template v-for="(m,i) in queryMedicines" :key="i">
+                          <div class="row">
+                            <div class="col-12 text-bold">
+                              <q-btn flat dense rounded icon="o_edit" @click="editPrescription(m)" />
+                              <q-btn flat dense rounded icon="o_delete" @click="deletePrescription(i)" />
+                              {{i+1}}.- {{m.name}} {{m.number}} {{m.unit}} {{m.times}} {{m.via}} {{m.diagnosis}}
+                            </div>
+                          </div>
+                        </template>
+                        <!--                  <pre>{{queryMedicines}}</pre>-->
+                        <!--                  <q-input dense outlined label="Receta medica 1" ref="prescription1" v-model="history.prescription1">-->
+                        <!--                    <template v-slot:append>-->
+                        <!--                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('prescription1')" />-->
+                        <!--                    </template>-->
+                        <!--                  </q-input>-->
+                        <!--                  <q-input dense outlined label="Receta medica 2" v-model="history.prescription2">-->
+                        <!--                    <template v-slot:append>-->
+                        <!--                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('prescription2')" />-->
+                        <!--                    </template>-->
+                        <!--                  </q-input>-->
+                        <!--                  <q-input dense outlined label="Receta medica 3" v-model="history.prescription3">-->
+                        <!--                    <template v-slot:append>-->
+                        <!--                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('prescription3')" />-->
+                        <!--                    </template>-->
+                        <!--                  </q-input>-->
+                        <!--                  <q-input dense outlined label="Receta medica 4" v-model="history.prescription4">-->
+                        <!--                    <template v-slot:append>-->
+                        <!--                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('prescription4')" />-->
+                        <!--                    </template>-->
+                        <!--                  </q-input>-->
+                        <!--                  <q-input dense outlined label="Receta medica 5" v-model="history.prescription5">-->
+                        <!--                    <template v-slot:append>-->
+                        <!--                      <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('prescription5')" />-->
+                        <!--                    </template>-->
+                        <!--                  </q-input>-->
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div class="col-12">
-                  <q-input dense outlined label="Observaciones" ref="observations" v-model="history.observations" type="textarea" />
-                </div>
-                <div class="col-12 bg-primary q-pa-xs text-white"> <q-icon name="work_outline" /> Informacion laboral</div>
-                <div class="col-6">
-                  <q-select dense outlined label="Resumen medico" ref="summary" v-model="history.summary" :options="summaries" />
-                </div>
-                <div class="col-6">
-                  <q-select dense outlined label="Medida de accion" v-model="history.action" :options="actions" />
-                </div>
-                <div class="col-6">
-                  <q-select clearable dense outlined label="RAYOS X - TOMOGRAFIA" multiple ref="summary" v-model="history.tomografias" :options="tomografias" />
-                </div>
-                <div class="col-6">
-                  <q-select clearable dense outlined label="ECOGRAFIA" multiple ref="summary" v-model="history.ecografias" :options="ecografias" />
-                </div>
-                <div class="col-6">
-                  <q-select clearable dense outlined label="laboratiorios" multiple ref="summary" v-model="history.laboratorios" :options="laboratorios" />
+                  <div class="row">
+                    <div class="col-6">
+                      <div class="col-12 bg-primary q-pa-xs text-white"> <q-icon name="o_contact_support" />
+                        Observaciones
+                        <q-btn dense flat :loading="loading" :icon="isRecording ? 'mic' : 'mic_off'" @click="ToggleMic('observations')" />
+                      </div>
+                      <div class="col-12">
+                        <q-input dense outlined label="Observaciones" ref="observations" v-model="history.observations" type="textarea" />
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="col-12 bg-primary q-pa-xs text-white"> <q-icon name="work_outline" /> Informacion laboral</div>
+                      <div class="row">
+                        <div class="col-6">
+                          <q-select dense outlined label="Resumen medico" ref="summary" v-model="history.summary" :options="summaries" />
+                        </div>
+                        <div class="col-6">
+                          <q-select dense outlined label="Medida de accion" v-model="history.action" :options="actions" />
+                        </div>
+                        <div class="col-6">
+                          <q-select clearable dense outlined label="RAYOS X - TOMOGRAFIA" multiple ref="summary" v-model="history.tomografias" :options="tomografias" />
+                        </div>
+                        <div class="col-6">
+                          <q-select clearable dense outlined label="ECOGRAFIA" multiple ref="summary" v-model="history.ecografias" :options="ecografias" />
+                        </div>
+                        <div class="col-6">
+                          <q-select clearable dense outlined label="laboratiorios" multiple ref="summary" v-model="history.laboratorios" :options="laboratorios" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div class="col-12">
                   <div><span class="text-subtitle2">Consulta Medica realizada por:</span> {{ store.user.name}} <span class="text-subtitle2"> en fecha:</span> {{ formatDate(hoy)}}</div>
                 </div>
+                <div class="col-12">
+                                  <q-btn :loading="loading" @click="historySubmit" :label="historyCreate?`Registrar`:`Modificar`" no-caps :class="`full-width ${historyCreate?`bg-green text-white`:`bg-yellow`} `" :icon="historyCreate?`check_circle_outline`:`edit`" flat  />
+                                  <q-btn v-if="!historyCreate" :loading="loading" @click="deleteHistory(history)" :label="`Eliminar`" no-caps :class="`full-width bg-red text-white`" :icon="`o_delete`" flat  />
+                </div>
               </div>
-            </q-scroll-area>
+<!--            </q-scroll-area>-->
 <!--              </div>-->
 <!--            </q-scroll-area>-->
           </div>
@@ -395,7 +442,10 @@
 import { useCounterStore } from 'stores/example-store'
 import { date } from 'quasar'
 import moment from 'moment'
+import Imprimir from 'src/addons/Imprimir'
 moment.locale('es')
+const SpeechRecognition = window.speechRecognition || window.webkitSpeechRecognition
+
 export default {
   name: 'HistoryItem',
   data () {
@@ -800,12 +850,12 @@ export default {
         { name: 'options', label: 'Opciones', field: 'options' },
         { name: 'date', label: 'Fecha', field: 'date', sortable: true },
         { name: 'doctor', label: 'doctor', field: (row) => row.user.name, sortable: true },
-        { name: 'summary', label: 'Resumen medico', field: 'summary', sortable: true },
-        { name: 'action', label: 'Medida de accion', field: 'action', sortable: true }
+        { name: 'exploration', label: 'Exploracion', field: 'exploration', sortable: true },
+        { name: 'observations', label: 'Observaciones', field: 'observations', sortable: true }
       ],
       // transcription: '',
       isRecording: false,
-      Recognition: window.SpeechRecognition || window.webkitSpeechRecognition,
+      // Recognition: window.SpeechRecognition || window.webkitSpeechRecognition,
       sr: null,
       type: '',
       queryMedicines: [],
@@ -823,7 +873,7 @@ export default {
     this.unitsGet()
     this.timesGet()
     this.viasGet()
-    this.sr = new this.Recognition()
+    this.sr = new SpeechRecognition()
     this.sr.continuous = true
     this.sr.interimResults = true
     this.sr.lang = 'es'
@@ -1031,6 +1081,9 @@ export default {
         this.queryMedicines.push(item)
       })
     },
+    printReceta (query) {
+      Imprimir.recetaPdf(query)
+    },
     deleteHistory (history) {
       this.$q.dialog({
         title: 'Eliminar',
@@ -1186,6 +1239,15 @@ export default {
       this.$api.get(`patients/${this.id}`).then(response => {
         this.patient = response.data
         this.historyGet()
+      }).catch(error => {
+        this.$q.notify({
+          message: error.response.data.message,
+          color: 'negative',
+          icon: 'error'
+        })
+        this.loading = false
+      }).finally(() => {
+        // this.loading = false
       })
     }
   },
