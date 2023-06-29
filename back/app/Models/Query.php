@@ -43,6 +43,8 @@ class Query extends Model
         'tomografias',
         'ecografias',
         'laboratorios',
+        'motivo',
+        'enfermedad'
     ];
     public function user(){return $this->belongsTo(User::class);}
     public function hospital(){return $this->belongsTo(Hospital::class);}

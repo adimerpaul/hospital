@@ -41,7 +41,7 @@ class QueryController extends Controller{
             $queryMedicine->note = isset($value['note']) ? $value['note'] : null;
             $queryMedicine->number = isset($value['number']) ? $value['number'] : null;
             $queryMedicine->unit = isset($value['unit']) ? $value['unit'] : null;
-            $queryMedicine->time = isset($value['time']) ? $value['time'] : null;
+            $queryMedicine->time = isset($value['times']) ? $value['times'] : null;
             $queryMedicine->via = isset($value['via']) ? $value['via'] : null;
             $queryMedicine->diagnosis = isset($value['diagnosis']) ? $value['diagnosis'] : null;
             $queryMedicine->save();

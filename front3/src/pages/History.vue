@@ -29,7 +29,7 @@
           </span>
         </div>
         <div class="col-6 text-right">
-          <q-btn class="q-mr-xs" :loading="loading" color="primary" label="Nuevo" icon="add_circle_outline" dense @click="historyAddClick" />
+          <q-btn class="q-mr-xs" :loading="loading" color="primary" label="Nuevo" no-caps icon="add_circle_outline" dense @click="historyAddClick" />
           <q-icon name="refresh" :loading="loading" class="q-mr-xs" size="1.4em" color="grey-8" @click="historyGet" />
         </div>
         <div class="col-12">
@@ -145,6 +145,12 @@
 <!--              <div v-for="n in 100" :key="n" class="q-py-xs">-->
 <!--            <q-scroll-area class="full-width full-height" ref="scrollAreaRef">-->
               <div class="row">
+                <div class="col-6">
+                  <q-input dense outlined label="Motivo de consulta" v-model="history.motivo" />
+                </div>
+                <div class="col-6">
+                  <q-input dense outlined label="Enfermedad actual" v-model="history.enfermedad" />
+                </div>
                 <div class="col-12 bg-primary q-pa-xs text-white"> <q-icon name="favorite_outline" /> Signos vitales</div>
                 <div class="col-12">
                   <div class="row">
@@ -427,6 +433,7 @@
             <div class="col-6 col-sm-3">
               <q-select dense options-dense outlined label="Diagnostico" v-model="medicine.diagnosis" :options="['',1,2,3,4]" />
             </div>
+<!--            <pre>{{medicine}}</pre>-->
           </div>
         </q-card-section>
         <q-card-actions align="right">
@@ -1174,7 +1181,9 @@ export default {
         prescription2: '',
         prescription3: '',
         prescription4: '',
-        prescription5: ''
+        prescription5: '',
+        motivo: '',
+        enfermedad: ''
       }
       this.historyCreate = true
       this.historyShow = true

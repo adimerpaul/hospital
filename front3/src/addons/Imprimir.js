@@ -3,7 +3,7 @@ import moment from 'moment'
 import { useCounterStore } from 'stores/example-store'
 export default class Imprimir {
   static recetaPdf (query) {
-    console.log(query)
+    // console.log(query)
     const user = useCounterStore().user
     /* eslint-disable */
     const doc = new jsPDF({
@@ -61,14 +61,35 @@ export default class Imprimir {
     doc.text(`Oruro, ${moment().format('DD')} de ${moment().format('MMMM')} de ${moment().format('YYYY')}`, 95, 202, { align: 'left' })
     doc.text('FAVOR NO CAMBIAR RECETA', 95, 211, { align: 'center' })
 
-    doc.text(`${query.name}`, 25, 50)
+    doc.text( `${this.calculateEdad(query.patient.birthday)} AÑOS`, 19, 40)
+    doc.text( query.height==null?'':`${query.height} KG`, 51, 40)
+    doc.text( query.weight==null?'':`${query.weight} CM`, 79, 40)
+    doc.text( query.tem==null?'':`${query.tem} °C`, 109, 40)
+    doc.text(`${query.patient.name} ${query.patient.lastname}`, 25, 49)
+
+    if (query.query_medicines.length > 0) {
+      doc.setFontSize(10)
+      doc.setFont('Belanosima', 'normal')
+      doc.text('MEDICAMENTOS', 5, 65)
+      doc.setFontSize(8)
+      doc.text('MEDICAMENTO', 5, 70)
+      doc.text('DOSIS', 60, 70)
+      doc.text('FRECUENCIA', 90, 70)
+      doc.text('UNIDAD', 120, 70)
+      doc.setFontSize(7)
+      let y = 75
+      query.query_medicines.forEach((element) => {
+        console.log(element)
+        doc.text(`${element.medicine}`, 5, y)
+        doc.text(`${element.number}`, 60, y)
+        doc.text(`${element.time}`, 90, y)
+        doc.text(`${element.unit}`, 120, y)
+        y = y + 5
+      })
+    }
 
 
 
-
-    doc.setFont('courier', 'bold')
-    doc.setFontSize(10)
-    doc.setFont(undefined, 'normal')
     // doc.text('Nombre: asasasa', 5, 10)
     // setTimeout(() => {
     //   doc.output('dataurlnewwindow', {filename: 'comprobante.pdf'});
@@ -76,5 +97,11 @@ export default class Imprimir {
     doc.save(`receta-${query.id}${moment().format('YYYYMMDDHHmmss')}.pdf`)
     // doc.autoPrint();
     // doc.output('dataurlnewwindow', {filename: 'comprobante.pdf'});
+  }
+  static calculateEdad (fNac) {
+    const today = moment()
+    const birthDate = moment(fNac)
+    const years = today.diff(birthDate, 'years')
+    return years
   }
 }

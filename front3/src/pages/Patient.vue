@@ -18,11 +18,11 @@
   <template v-slot:body-cell-options="props">
     <q-td :props="props" auto-width>
       <q-btn-group>
-        <q-btn dense icon="o_edit" @click="patientEditClick(props.row)" color="primary" >
-          <q-tooltip>Editar</q-tooltip>
-        </q-btn>
         <q-btn dense icon="o_delete" @click="patientDeleteClick(props.row)" color="negative" >
           <q-tooltip>Eliminar</q-tooltip>
+        </q-btn>
+        <q-btn dense icon="o_edit" @click="patientEditClick(props.row)" color="primary" >
+          <q-tooltip>Editar</q-tooltip>
         </q-btn>
         <q-btn dense icon="o_history" :to="`history/${props.row.id}`" no-caps color="cyan" >
           <q-tooltip>Historial Clinico</q-tooltip>
@@ -63,20 +63,20 @@
   <q-card-section>
     <q-form @submit.prevent="patientSubmit">
       <div class="row">
-        <div class="col-12 col-md-6">
-          <q-input v-model="patient.name" label="Nombre" outlined hint="" dense required />
-          <q-input v-model="patient.lastname" label="Apellido" outlined hint="" dense required />
-          <q-select v-model="patient.sex" label="Sexo" outlined hint="" dense required :options="['MASCULINO', 'FEMENINO']" />
-          <q-input v-model="patient.phone" label="Teléfono" outlined hint="" dense required />
-        </div>
-        <div class="col-12 col-md-6">
-          <q-input v-model="patient.email" label="Email" outlined hint="" dense required />
-          <q-input v-model="patient.address" label="Dirección" outlined hint="" dense required />
-          <q-input v-model="patient.birthday" label="Fecha de nacimiento" type="date" outlined hint="" dense required />
+<!--        <div class="col-12 col-md-6">-->
+          <div class="col-12 col-md-6"><q-input v-model="patient.name" label="Nombre" outlined hint="" dense required /></div>
+          <div class="col-12 col-md-6"><q-input v-model="patient.lastname" label="Apellido" outlined hint="" dense  /></div>
+          <div class="col-12 col-md-6"><q-select v-model="patient.sex" label="Sexo" outlined hint="" dense required :options="['MASCULINO', 'FEMENINO']" /></div>
+          <div class="col-12 col-md-6"><q-input v-model="patient.phone" label="Teléfono" outlined hint="" dense  /></div>
+<!--        </div>-->
+<!--        <div class="col-12 col-md-6">-->
+          <div class="col-12 col-md-6"><q-input v-model="patient.email" label="Email" outlined hint="" dense  /></div>
+          <div class="col-12 col-md-6"><q-input v-model="patient.address" label="Dirección" outlined hint="" dense  /></div>
+          <div class="col-12 col-md-6"><q-input v-model="patient.birthday" label="Fecha de nacimiento" type="date" outlined hint="" dense  /></div>
           <div class="flex flex-center text-bold">
             {{edad}}
           </div>
-        </div>
+<!--        </div>-->
       </div>
       <q-card-actions align="right">
         <q-btn color="red" label="Cancelar" v-close-popup icon="o_delete" />
@@ -136,6 +136,12 @@ export default {
       this.patientCreate = true
       this.patientShow = true
       this.patient = {
+        name: '',
+        lastname: '',
+        phone: '',
+        email: '',
+        address: '',
+        avatar: '',
         birthday: date.formatDate(new Date(), 'YYYY-MM-DD'),
         sex: 'MASCULINO'
       }
